@@ -1,14 +1,15 @@
-﻿using BUECarSystem.Auth;
-using BUECarSystem.Authentications;
-using BUECarSystem.Interfaces.Repositories;
+﻿
+using Event.auth;
+using Event.Authentications;
 using Event.Models;
+using Event.Repository.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
 
-namespace BUECarSystem.Implementations.Repositories
+namespace Event.Repository.Implementations
 {
     public class TokenManager : ITokenManager
     {

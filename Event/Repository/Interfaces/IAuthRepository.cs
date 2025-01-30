@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BUECarSystem.Interfaces.Repositories
+namespace Event.Repository.Interfaces
 {
     public interface IAuthRepository
     {

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BUECarSystem.Interfaces.Repositories
+namespace Event.Repository.Implementations
 {
     public interface IOldHrmRepository
     {

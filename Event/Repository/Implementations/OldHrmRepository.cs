@@ -1,5 +1,5 @@
-﻿using BUECarSystem.Interfaces.Repositories;
-using Event.DTOs;
+﻿using Event.DTOs;
+using Event.Models;
 using Event.Models.HrmModels;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -7,11 +7,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BUECarSystem.Implementations.Repositories
+namespace Event.Repository.Implementations
 {
-    public class OldHrmRepository : BaseRepository, IOldHrmRepository
+    public class OldHrmRepository : IOldHrmRepository
     {
-        public OldHrmRepository( HrmDBContext context ) : base( context ) { }
+        private readonly HrmDBContext _context;
+
+        public OldHrmRepository(HrmDBContext context)
+        {
+            _context = context;
+        }
         public async Task<Buecarinfouser> FindOneAsync( string code )
         {
             var queryResult = await ( from emp in _context.BueEmpEmployees

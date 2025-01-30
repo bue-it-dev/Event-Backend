@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BUECarSystem.Authentications
+namespace Event.Authentications
 {
     public class AuthToken
     {

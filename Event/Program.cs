@@ -1,8 +1,8 @@
-
-using BUECarSystem.Implementations.Repositories;
-using BUECarSystem.Interfaces.Repositories;
+using Event.Helper;
 using Event.Models;
 using Event.Models.EventModels;
+using Event.Repository.Implementations;
+using Event.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 
@@ -20,7 +20,9 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+builder.Services.AddScoped<IOldHrmRepository, OldHrmRepository>();
+builder.Services.AddScoped<ITokenManager, TokenManager>();
 var app = builder.Build();
 
 

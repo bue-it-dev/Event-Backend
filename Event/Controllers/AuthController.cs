@@ -1,6 +1,7 @@
-﻿using BUECarSystem.Interfaces.Repositories;
-using Event.DTOs;
+﻿using Event.DTOs;
+using Event.Models;
 using Event.Models.HrmModels;
+using Event.Repository.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BUECarSystem.Controllers
+namespace Event.Controllers
 {
     [Route("/api/auth")]
     [Produces("application/json")]

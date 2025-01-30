@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Event.Models;
 using Event.Models.HrmModels;
-namespace BUECarSystem.Implementations.Repositories
+namespace Event.Repository.Implementations
 {
     public class BaseRepository
     {

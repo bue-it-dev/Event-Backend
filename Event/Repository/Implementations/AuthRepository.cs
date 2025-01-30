@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BUECarSystem.Authentications;
-using BUECarSystem.Helper;
-using BUECarSystem.Interfaces.Repositories;
+using Event.Authentications;
 using Event.DTOs;
 using Event.Models;
+using Event.Repository.Interfaces;
 
-namespace BUECarSystem.Implementations.Repositories
+namespace Event.Helper
+
 {
     public class AuthRepository : IAuthRepository
     {
