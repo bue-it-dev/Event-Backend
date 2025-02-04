@@ -1,0 +1,23 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace Event.Models.EventModel;
+
+public partial class EventApproval
+{
+    public int ApprovalId { get; set; }
+
+    public int? EventId { get; set; }
+
+    public int? ApprovalLevelId { get; set; }
+
+    public int? EmpId { get; set; }
+
+    public int? Status { get; set; }
+
+    public DateTime? CreatedAt { get; set; }
+
+    public virtual EventApprovalLevelLookup? ApprovalLevel { get; set; }
+
+    public virtual Event? Event { get; set; }
+}

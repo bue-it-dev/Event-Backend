@@ -1,6 +1,5 @@
 using Event.Helper;
 using Event.Models;
-using Event.Models.EventModels;
 using Event.Repository.Implementations;
 using Event.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -12,8 +11,7 @@ builder.Services.AddDbContext<HrmDBContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("HrmDatabase"),
         ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("HrmDatabase"))));
 
-builder.Services.AddDbContext<EventContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("EventDatabase")));
+
 
 builder.Services.AddControllers();
 

@@ -15,10 +15,13 @@ namespace Event.Repository.Implementations
     {
         private readonly HrmDBContext _context;
         private readonly IOldHrmRepository _oldHrmRepository;
-        public TokenManager( HrmDBContext context, IOldHrmRepository oldHrmRepository )
+        private readonly JwtSettings _jwtSettings;
+
+        public TokenManager(IConfiguration configuration, HrmDBContext context, IOldHrmRepository oldHrmRepository)
         {
-            _oldHrmRepository = oldHrmRepository;
             _context = context;
+            _oldHrmRepository = oldHrmRepository;
+            _jwtSettings = configuration.GetSection("Jwt").Get<JwtSettings>();
         }
 
         public async Task<AuthToken> GenerateAsync( string username, string loginType = null )
@@ -36,10 +39,10 @@ namespace Event.Repository.Implementations
                 };
            
             JwtSecurityToken token = new TokenBuilder()
-            .AddAudience( TokenConstants.Audience )
-            .AddIssuer( TokenConstants.Issuer )
-            .AddExpiry( TokenConstants.ExpiryInMinutes )
-            .AddKey( TokenConstants.key )
+            .AddAudience(_jwtSettings.Audience )
+            .AddIssuer(_jwtSettings.Issuer )
+            .AddExpiry(_jwtSettings.ExpiryInMinutes )
+            .AddKey(_jwtSettings.Key )
             .AddClaims( claims )
             .Build();
 
@@ -48,7 +51,7 @@ namespace Event.Repository.Implementations
             return new AuthToken()
             {
                 AccessToken = accessToken,
-                ExpiresIn = TokenConstants.ExpiryInMinutes
+                ExpiresIn = _jwtSettings.ExpiryInMinutes
             };
         }
     }
