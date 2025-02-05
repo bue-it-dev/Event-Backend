@@ -8,6 +8,6 @@ namespace Event.Repository.Interfaces
 {
     public interface ITokenManager
     {
-        Task<AuthToken> GenerateAsync(string username,string loginType);
+        Task<AuthToken> GenerateAsync(string username);
     }
 }

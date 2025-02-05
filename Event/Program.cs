@@ -1,8 +1,12 @@
 using Event.Helper;
 using Event.Models;
+using Event.Models.EventModel;
 using Event.Repository.Implementations;
 using Event.Repository.Interfaces;
+using Event.Services.Implementations;
+using Event.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,9 +15,11 @@ builder.Services.AddDbContext<HrmDBContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("HrmDatabase"),
         ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("HrmDatabase"))));
 
-
+builder.Services.AddDbContext<EventContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("EventDatabase")));
 
 builder.Services.AddControllers();
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -21,6 +27,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IOldHrmRepository, OldHrmRepository>();
 builder.Services.AddScoped<ITokenManager, TokenManager>();
+builder.Services.AddScoped<IMailService, MailService>();
 var app = builder.Build();
 
 

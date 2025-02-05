@@ -31,7 +31,7 @@ namespace Event.Helper
                
                 AuthToken token;
                
-                    token = await _tokenManager.GenerateAsync(userName, null);
+                    token = await _tokenManager.GenerateAsync(userName);
                 
                 return new AuthenticateResponsDTO
                 {
