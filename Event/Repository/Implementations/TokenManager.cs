@@ -2,7 +2,7 @@
 using Event.auth;
 using Event.Authentications;
 using Event.Models;
-using Event.Models.EventModel;
+using Event.EventModel;
 using Event.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;

@@ -1,6 +1,6 @@
 using Event.Helper;
 using Event.Models;
-using Event.Models.EventModel;
+using Event.EventModel;
 using Event.Repository.Implementations;
 using Event.Repository.Interfaces;
 using Event.Services.Implementations;

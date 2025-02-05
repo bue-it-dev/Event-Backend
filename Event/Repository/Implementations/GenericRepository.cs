@@ -1,4 +1,4 @@
-﻿using Event.Models.EventModel;
+﻿using Event.EventModel;
 using Event.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
