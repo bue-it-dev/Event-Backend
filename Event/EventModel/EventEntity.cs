@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Event.EventModel;
 
-public partial class Event
+public partial class EventEntity
 {
     public int EventId { get; set; }
 

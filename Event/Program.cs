@@ -16,7 +16,8 @@ builder.Services.AddDbContext<HrmDBContext>(options =>
         ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("HrmDatabase"))));
 
 builder.Services.AddDbContext<EventContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("EventDatabase")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("EventDatabase")),
+    ServiceLifetime.Scoped);
 
 builder.Services.AddControllers();
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
@@ -32,6 +33,10 @@ builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IOldHrmRepository, OldHrmRepository>();
 builder.Services.AddScoped<ITokenManager, TokenManager>();
 builder.Services.AddScoped<IMailService, MailService>();
+builder.Services.AddScoped<IEventRepository, EventRepository>();
+builder.Services.AddScoped<IEventService, EventService>();
+builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
+
 
 var app = builder.Build();
 

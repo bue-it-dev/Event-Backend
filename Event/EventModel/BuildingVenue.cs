@@ -11,7 +11,7 @@ public partial class BuildingVenue
 
     public int? VenueId { get; set; }
 
-    public virtual Event? Event { get; set; }
+    public virtual EventEntity? Event { get; set; }
 
     public virtual VenueLookup? Venue { get; set; }
 }

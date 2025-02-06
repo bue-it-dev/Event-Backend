@@ -25,11 +25,11 @@ public partial class EventContext : DbContext
 
     public virtual DbSet<DepartmentTypeLookup> DepartmentTypeLookups { get; set; }
 
-    public virtual DbSet<Event> Events { get; set; }
-
     public virtual DbSet<EventApproval> EventApprovals { get; set; }
 
     public virtual DbSet<EventApprovalLevelLookup> EventApprovalLevelLookups { get; set; }
+
+    public virtual DbSet<EventEntity> EventEntities { get; set; }
 
     public virtual DbSet<ItcomponentEvent> ItcomponentEvents { get; set; }
 
@@ -137,46 +137,6 @@ public partial class EventContext : DbContext
             entity.Property(e => e.DepTypeName).HasColumnName("depTypeName");
         });
 
-        modelBuilder.Entity<Event>(entity =>
-        {
-            entity.HasKey(e => e.EventId).HasName("PK_BusinessRequest");
-
-            entity.ToTable("Event");
-
-            entity.Property(e => e.EventId).HasColumnName("eventId");
-            entity.Property(e => e.ApprovingDepTypeId).HasColumnName("approvingDepTypeID");
-            entity.Property(e => e.ApprovingDeptName)
-                .HasMaxLength(50)
-                .HasColumnName("approvingDeptName");
-            entity.Property(e => e.BudgetCode).HasColumnName("budgetCode");
-            entity.Property(e => e.BudgetCostCenter).HasColumnName("budgetCostCenter");
-            entity.Property(e => e.BudgetlineName).HasColumnName("budgetlineName");
-            entity.Property(e => e.BudgetlineType).HasColumnName("budgetlineType");
-            entity.Property(e => e.CreatedAt)
-                .HasColumnType("datetime")
-                .HasColumnName("created_at");
-            entity.Property(e => e.EndDateTime).HasColumnType("datetime");
-            entity.Property(e => e.EventEndDate)
-                .HasColumnType("datetime")
-                .HasColumnName("eventEndDate");
-            entity.Property(e => e.EventStartDate)
-                .HasColumnType("datetime")
-                .HasColumnName("eventStartDate");
-            entity.Property(e => e.HasAccomdation).HasColumnName("hasAccomdation");
-            entity.Property(e => e.HasIt).HasColumnName("hasIT");
-            entity.Property(e => e.HasTransportation).HasColumnName("hasTransportation");
-            entity.Property(e => e.IsAcademic).HasColumnName("isAcademic");
-            entity.Property(e => e.OrganizerExtention).HasColumnName("organizerExtention");
-            entity.Property(e => e.OrganizerMobile).HasColumnName("organizerMobile");
-            entity.Property(e => e.OrganizerName)
-                .HasMaxLength(50)
-                .HasColumnName("organizerName");
-            entity.Property(e => e.StartDateTime).HasColumnType("datetime");
-            entity.Property(e => e.UpdateAt)
-                .HasColumnType("datetime")
-                .HasColumnName("update_at");
-        });
-
         modelBuilder.Entity<EventApproval>(entity =>
         {
             entity.HasKey(e => e.ApprovalId).HasName("PK_BusinessApprovals");
@@ -213,6 +173,46 @@ public partial class EventContext : DbContext
                 .HasColumnName("approvalLevelName");
         });
 
+        modelBuilder.Entity<EventEntity>(entity =>
+        {
+            entity.HasKey(e => e.EventId).HasName("PK_BusinessRequest");
+
+            entity.ToTable("EventEntity");
+
+            entity.Property(e => e.EventId).HasColumnName("eventId");
+            entity.Property(e => e.ApprovingDepTypeId).HasColumnName("approvingDepTypeID");
+            entity.Property(e => e.ApprovingDeptName)
+                .HasMaxLength(50)
+                .HasColumnName("approvingDeptName");
+            entity.Property(e => e.BudgetCode).HasColumnName("budgetCode");
+            entity.Property(e => e.BudgetCostCenter).HasColumnName("budgetCostCenter");
+            entity.Property(e => e.BudgetlineName).HasColumnName("budgetlineName");
+            entity.Property(e => e.BudgetlineType).HasColumnName("budgetlineType");
+            entity.Property(e => e.CreatedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("created_at");
+            entity.Property(e => e.EndDateTime).HasColumnType("datetime");
+            entity.Property(e => e.EventEndDate)
+                .HasColumnType("datetime")
+                .HasColumnName("eventEndDate");
+            entity.Property(e => e.EventStartDate)
+                .HasColumnType("datetime")
+                .HasColumnName("eventStartDate");
+            entity.Property(e => e.HasAccomdation).HasColumnName("hasAccomdation");
+            entity.Property(e => e.HasIt).HasColumnName("hasIT");
+            entity.Property(e => e.HasTransportation).HasColumnName("hasTransportation");
+            entity.Property(e => e.IsAcademic).HasColumnName("isAcademic");
+            entity.Property(e => e.OrganizerExtention).HasColumnName("organizerExtention");
+            entity.Property(e => e.OrganizerMobile).HasColumnName("organizerMobile");
+            entity.Property(e => e.OrganizerName)
+                .HasMaxLength(50)
+                .HasColumnName("organizerName");
+            entity.Property(e => e.StartDateTime).HasColumnType("datetime");
+            entity.Property(e => e.UpdateAt)
+                .HasColumnType("datetime")
+                .HasColumnName("update_at");
+        });
+
         modelBuilder.Entity<ItcomponentEvent>(entity =>
         {
             entity.HasKey(e => e.ItcomponentEventId).HasName("PK__ITCompon__0760172737F25CC7");
@@ -226,10 +226,6 @@ public partial class EventContext : DbContext
             entity.HasOne(d => d.Event).WithMany(p => p.ItcomponentEvents)
                 .HasForeignKey(d => d.EventId)
                 .HasConstraintName("FK__ITCompone__event__5DCAEF64");
-
-            entity.HasOne(d => d.Itcomponent).WithMany(p => p.ItcomponentEvents)
-                .HasForeignKey(d => d.ItcomponentId)
-                .HasConstraintName("FK__ITCompone__ITCom__5EBF139D");
         });
 
         modelBuilder.Entity<ItcomponentLookup>(entity =>

@@ -15,7 +15,7 @@ public partial class Transportation
 
     public DateTime? EndDate { get; set; }
 
-    public virtual Event? Event { get; set; }
+    public virtual EventEntity? Event { get; set; }
 
     public virtual TransportationType? TransportationType { get; set; }
 }

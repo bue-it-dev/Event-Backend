@@ -1,14 +1,15 @@
-﻿namespace Event.DTOs
+﻿using Event.EventModel;
+
+namespace Event.DTOs
 {
     public class EventDTO
     {
+        public int EventId { get; set; }
         public int? IsAcademic { get; set; }
 
         public int? ApprovingDepTypeId { get; set; }
 
         public string EventTitle { get; set; } = null!;
-
-        public string? ApprovingDepName { get; set; }
 
         public int? NomParticipants { get; set; }
 
@@ -30,14 +31,20 @@
 
         public string? BudgetCostCenter { get; set; }
 
-        public DateTime? StartDateTime { get; set; }
-
         public DateTime? EndDateTime { get; set; }
+
+        public DateTime? StartDateTime { get; set; }
 
         public string? OrganizerName { get; set; }
 
         public int? OrganizerMobile { get; set; }
 
         public int? OrganizerExtention { get; set; }
+
+        public string? ApprovingDeptName { get; set; }
+
+        public int? DeptId { get; set; }
+        public virtual ICollection<ItcomponentEventDTO> ItcomponentEvents { get; set; } 
+
     }
 }

@@ -10,11 +10,12 @@ namespace Event.Repository.Implementations
 
         private readonly EventContext _eventContext;
         private readonly DbSet<T> _dbSet;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public GenericRepository(EventContext eventContext)
+        public GenericRepository(EventContext eventContext, IUnitOfWork unitOfWork)
         {
-            eventContext = _eventContext;
             _dbSet = eventContext.Set<T>();
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<IEnumerable<T>> GetAllAsync()
@@ -34,15 +35,22 @@ namespace Event.Repository.Implementations
 
         public async Task AddAsync(T entity)
         {
-            await _dbSet.AddAsync(entity);
-            await _eventContext.SaveChangesAsync();
+            try
+            {
+
+                await _dbSet.AddAsync(entity);
+                await _unitOfWork.Save();
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
         }
 
         public async Task UpdateAsync(T entity)
         {
             _dbSet.Attach(entity);
             _eventContext.Entry(entity).State = EntityState.Modified;
-            await _eventContext.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(int id)
@@ -51,8 +59,15 @@ namespace Event.Repository.Implementations
             if (entity != null)
             {
                 _dbSet.Remove(entity);
-                await _eventContext.SaveChangesAsync();
+                _unitOfWork.Save();
             }
         }
+        public async Task AddRangeAsync(IEnumerable<T> entities)
+        {
+            await _eventContext.AddRangeAsync(entities);
+        }
+
+
+
     }
 }

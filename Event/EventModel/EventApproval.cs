@@ -19,5 +19,5 @@ public partial class EventApproval
 
     public virtual EventApprovalLevelLookup? ApprovalLevel { get; set; }
 
-    public virtual Event? Event { get; set; }
+    public virtual EventEntity? Event { get; set; }
 }
