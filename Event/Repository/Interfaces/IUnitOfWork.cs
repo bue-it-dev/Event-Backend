@@ -1,4 +1,5 @@
 ﻿using Event.EventModel;
+using Microsoft.EntityFrameworkCore;
 
 namespace Event.Repository.Interfaces
 {
@@ -6,8 +7,9 @@ namespace Event.Repository.Interfaces
     {
 
        
-            IGenericRepository<ItcomponentEvent> ItcomponentEvent { get; }  
-            Task<int> Save();
+         IGenericRepository<EventEntity> EventEntity { get; }
+        DbSet<T> Set<T>() where T : class;
+        Task<int> Save();
 
         
     }

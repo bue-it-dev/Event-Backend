@@ -225,7 +225,8 @@ public partial class EventContext : DbContext
 
             entity.HasOne(d => d.Event).WithMany(p => p.ItcomponentEvents)
                 .HasForeignKey(d => d.EventId)
-                .HasConstraintName("FK__ITCompone__event__5DCAEF64");
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK__ITCompone__event");
         });
 
         modelBuilder.Entity<ItcomponentLookup>(entity =>

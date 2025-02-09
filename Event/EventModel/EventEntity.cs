@@ -51,6 +51,12 @@ public partial class EventEntity
 
     public int? DeptId { get; set; }
 
+    public int? IsOthers { get; set; }
+
+    public int? IsStaffStudents { get; set; }
+
+    public int? IsChairBoardPrisidentVcb { get; set; }
+
     public virtual ICollection<Accommodation> Accommodations { get; set; } = new List<Accommodation>();
 
     public virtual ICollection<BuildingVenue> BuildingVenues { get; set; } = new List<BuildingVenue>();
@@ -58,6 +64,8 @@ public partial class EventEntity
     public virtual ICollection<EventApproval> EventApprovals { get; set; } = new List<EventApproval>();
 
     public virtual ICollection<ItcomponentEvent> ItcomponentEvents { get; set; } = new List<ItcomponentEvent>();
+
+    public virtual ICollection<Passport> Passports { get; set; } = new List<Passport>();
 
     public virtual ICollection<Transportation> Transportations { get; set; } = new List<Transportation>();
 }

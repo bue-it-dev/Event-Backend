@@ -44,7 +44,13 @@ namespace Event.DTOs
         public string? ApprovingDeptName { get; set; }
 
         public int? DeptId { get; set; }
-        public virtual ICollection<ItcomponentEventDTO> ItcomponentEvents { get; set; } 
+        public string DeptName { get; set; }    
+
+        public virtual ICollection<ItcomponentEventDTO> ItcomponentEvents { get; set; }
+        public virtual ICollection<TransportationDTO> Transportations { get; set; } 
+
+        public virtual ICollection<AccommodationDTO> Accommodations { get; set; }
+
 
     }
 }

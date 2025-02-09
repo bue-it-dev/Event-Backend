@@ -5,7 +5,7 @@ namespace Event.Repository.Interfaces
 {
     public interface IEventRepository : IGenericRepository<EventEntity>
     {
-      
+        //Task Submit(EventEntity eventData);
 
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Event.EventModel;
 using Event.Repository.Implementations;
 using Event.Repository.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 public class UnitOfWork : IUnitOfWork
 {
@@ -8,7 +9,7 @@ public class UnitOfWork : IUnitOfWork
     private Dictionary<Type, object> _repositories;
 
 
-    public IGenericRepository<ItcomponentEvent> ItcomponentEvent { get; private set; }
+    public IGenericRepository<EventEntity> EventEntity { get; private set; }
 
 
     public UnitOfWork(EventContext context)
@@ -16,7 +17,7 @@ public class UnitOfWork : IUnitOfWork
         _context = context;
         _repositories = new Dictionary<Type, object>();
 
-        ItcomponentEvent = new GenericRepository<ItcomponentEvent>(_context, this);
+        EventEntity = new GenericRepository<EventEntity>(_context, this);
     }
 
     public IGenericRepository<T> GetRepository<T>() where T : class
@@ -42,5 +43,10 @@ public class UnitOfWork : IUnitOfWork
         }
     }
 
- 
+    public DbSet<T> Set<T>() where T : class
+    {
+        return _context.Set<T>();
+    }
+
 }
+

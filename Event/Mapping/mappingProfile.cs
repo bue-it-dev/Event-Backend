@@ -9,7 +9,9 @@ namespace Event.Mapping
         public mappingProfile() 
 
         {
-            CreateMap<EventDTO, EventEntity>().ReverseMap();
+            CreateMap<EventDTO, EventEntity>().ForMember(dest => dest.ItcomponentEvents, opt => opt.Ignore())
+                .ForMember(dest => dest.Transportations,opt =>opt.Ignore())
+                .ForMember(dest => dest.Accommodations, opt => opt.Ignore()).ReverseMap();
 
             CreateMap<ItcomponentEvent, ItcomponentEventDTO>().ReverseMap();
         }
