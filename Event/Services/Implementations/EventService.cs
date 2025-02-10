@@ -27,7 +27,7 @@ namespace Event.Services.Implementations
         }
 
 
-        public async Task<EventDTO> AddEventData(EventDTO eventData)
+        public async Task<EventDTO> AddEventData(EventDTO eventData, List<IFormFile> passportData)
         {
 
             var newEvent = _mapper.Map<EventEntity>(eventData);
@@ -76,20 +76,63 @@ namespace Event.Services.Implementations
             }
 
 
+
+            //if (passportData != null && passportData.Any())
+            //{
+            //    var uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "passports");
+            //    if (!Directory.Exists(uploadFolder))
+            //    {
+            //        Directory.CreateDirectory(uploadFolder);
+            //    }
+
+            //    var passports = new List<Passport>();
+
+            //    foreach (var file in passportData) // ✅ Correct: Loop through uploaded files
+            //    {
+            //        try
+            //        {
+            //            // Generate a unique file name
+            //            var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(file.FileName)}";
+            //            var filePath = Path.Combine(uploadFolder, fileName);
+
+            //            // Save file to server
+            //            using (var stream = new FileStream(filePath, FileMode.Create))
+            //            {
+            //                await file.CopyToAsync(stream);
+            //            }
+
+            //            // Store only the file path in DB
+            //            passports.Add(new Passport
+            //            {
+            //                EventId = newEvent.EventId,
+            //                PassportFile = $"/uploads/passports/{fileName}"
+            //            });
+            //        }
+            //        catch (Exception ex)
+            //        {
+            //            Console.WriteLine($"Error saving file: {ex.Message}");
+            //        }
+            //    }
+
+            //    _unitOfWork.Set<Passport>().AddRange(passports);
+            //}
+
+
+
+
+
+
             await _unitOfWork.Save();
-            return eventData;
+                return eventData;
+            }
+
+
+
+
+
         }
-
-
-
-
-
-        public async Task Submit(EventEntity eventData)
-        {
-           
         }
-    }
-}
+    
 
 
 

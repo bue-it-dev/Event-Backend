@@ -50,6 +50,8 @@ namespace Event.DTOs
         public virtual ICollection<TransportationDTO> Transportations { get; set; } 
 
         public virtual ICollection<AccommodationDTO> Accommodations { get; set; }
+        public virtual ICollection<BuildingVenuesDTO> BuildingVenues { get; set; }
+
 
 
     }

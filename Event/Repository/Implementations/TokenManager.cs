@@ -10,6 +10,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using RestSharp.Authenticators;
 
 
 namespace Event.Repository.Implementations
@@ -19,13 +20,13 @@ namespace Event.Repository.Implementations
         private readonly HrmDBContext _context;
         private readonly EventContext _eventContext;
         private readonly IOldHrmRepository _oldHrmRepository;
-        private readonly JwtSettings _jwtSettings;
+        //private readonly JwtSettings _jwtSettings;
 
         public TokenManager(IConfiguration configuration, HrmDBContext context, IOldHrmRepository oldHrmRepository, EventContext eventContext)
         {
             _context = context;
             _oldHrmRepository = oldHrmRepository;
-            _jwtSettings = configuration.GetSection("Jwt").Get<JwtSettings>();
+            //_jwtSettings = configuration.GetSection("Jwt").Get<JwtSettings>();
             _eventContext = eventContext;
         }
 
@@ -50,10 +51,10 @@ namespace Event.Repository.Implementations
                 new Claim ("jobTitle", employee.JobName)
                 };
                 JwtSecurityToken token = new TokenBuilder()
-                .AddAudience(_jwtSettings.Audience)
-                .AddIssuer(_jwtSettings.Issuer)
-                .AddExpiry(_jwtSettings.ExpiryInMinutes)
-                .AddKey(_jwtSettings.Key)
+                .AddAudience(JwtSettings.Audience)
+                .AddIssuer(JwtSettings.Issuer)
+                .AddExpiry(JwtSettings.ExpiryInMinutes)
+                .AddKey(JwtSettings.key)
                 .AddClaims(claims)
                 .Build();
 
@@ -62,7 +63,7 @@ namespace Event.Repository.Implementations
                 return new AuthToken()
                 {
                     AccessToken = accessToken,
-                    ExpiresIn = _jwtSettings.ExpiryInMinutes
+                    ExpiresIn = JwtSettings.ExpiryInMinutes
                 };
             }
             else
@@ -79,10 +80,10 @@ namespace Event.Repository.Implementations
                 new Claim ("jobTitle", employee.JobName)
                 };
                 JwtSecurityToken token = new TokenBuilder()
-                .AddAudience(_jwtSettings.Audience)
-                .AddIssuer(_jwtSettings.Issuer)
-                .AddExpiry(_jwtSettings.ExpiryInMinutes)
-                .AddKey(_jwtSettings.Key)
+                .AddAudience(JwtSettings.Audience)
+                .AddIssuer(JwtSettings.Issuer)
+                .AddExpiry(JwtSettings.ExpiryInMinutes)
+                .AddKey(JwtSettings.key)
                 .AddClaims(claims)
                 .Build();
 
@@ -91,7 +92,7 @@ namespace Event.Repository.Implementations
                 return new AuthToken()
                 {
                     AccessToken = accessToken,
-                    ExpiresIn = _jwtSettings.ExpiryInMinutes
+                    ExpiresIn = JwtSettings.ExpiryInMinutes
 
                 };
             }

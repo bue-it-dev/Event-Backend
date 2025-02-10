@@ -8,6 +8,7 @@ using Event.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
+using Event.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +37,7 @@ builder.Services.AddScoped<IMailService, MailService>();
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
+builder.Services.AddJwtBearerAuthentication();
 
 
 var app = builder.Build();
@@ -49,6 +51,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors(builder => builder
+             .AllowAnyHeader()
+             .AllowAnyMethod()
+             .SetIsOriginAllowed((host) => true)
+             .AllowCredentials()
+        );
 
 app.UseHttpsRedirection();
 

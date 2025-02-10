@@ -37,6 +37,8 @@ public partial class EventContext : DbContext
 
     public virtual DbSet<NatureOfEventLookup> NatureOfEventLookups { get; set; }
 
+    public virtual DbSet<Passport> Passports { get; set; }
+
     public virtual DbSet<RoomLookup> RoomLookups { get; set; }
 
     public virtual DbSet<Transportation> Transportations { get; set; }
@@ -202,6 +204,9 @@ public partial class EventContext : DbContext
             entity.Property(e => e.HasIt).HasColumnName("hasIT");
             entity.Property(e => e.HasTransportation).HasColumnName("hasTransportation");
             entity.Property(e => e.IsAcademic).HasColumnName("isAcademic");
+            entity.Property(e => e.IsChairBoardPrisidentVcb).HasColumnName("isChairBoardPrisidentVCB");
+            entity.Property(e => e.IsOthers).HasColumnName("isOthers");
+            entity.Property(e => e.IsStaffStudents).HasColumnName("isStaffStudents");
             entity.Property(e => e.OrganizerExtention).HasColumnName("organizerExtention");
             entity.Property(e => e.OrganizerMobile).HasColumnName("organizerMobile");
             entity.Property(e => e.OrganizerName)
@@ -255,6 +260,19 @@ public partial class EventContext : DbContext
                 .HasColumnName("natureOfEvent");
         });
 
+        modelBuilder.Entity<Passport>(entity =>
+        {
+            entity.ToTable("Passport");
+
+            entity.Property(e => e.PassportId).HasColumnName("passportId");
+            entity.Property(e => e.EventId).HasColumnName("eventId");
+            entity.Property(e => e.PassportFile).HasColumnName("passportFile");
+
+            entity.HasOne(d => d.Event).WithMany(p => p.Passports)
+                .HasForeignKey(d => d.EventId)
+                .HasConstraintName("FK_Passport_EventEntity");
+        });
+
         modelBuilder.Entity<RoomLookup>(entity =>
         {
             entity.HasKey(e => e.RoomTypeId).HasName("PK__roomLook__5E5E0CF3045C69D6");
@@ -262,10 +280,10 @@ public partial class EventContext : DbContext
             entity.ToTable("roomLookup");
 
             entity.Property(e => e.RoomTypeId).HasColumnName("roomTypeId");
-            entity.Property(e => e.RoomType)
+            entity.Property(e => e.RoomTypeName)
                 .HasMaxLength(255)
                 .IsUnicode(false)
-                .HasColumnName("roomType");
+                .HasColumnName("roomTypeName");
         });
 
         modelBuilder.Entity<Transportation>(entity =>

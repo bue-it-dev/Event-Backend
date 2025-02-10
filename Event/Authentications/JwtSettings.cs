@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace Event.auth
 {
-    public  class JwtSettings
+    public static class JwtSettings
     {
-        public string Issuer { get; set; }
-        public string Audience { get; set; }
-        public int ExpiryInMinutes { get; set; }
-        public string Key { get; set; }
+        public const string Issuer = "thisismeyouknow";
+        public const string Audience = "thisismeyouknow";
+        public const int ExpiryInMinutes = 120;
+        public const string key = "8Zz5tw0Ionm3XPZZfN0NOml3z9FMfmpgXwovR9fp6ryDIoGRM8EPHAB6iHsc0fb";
     }
 }
