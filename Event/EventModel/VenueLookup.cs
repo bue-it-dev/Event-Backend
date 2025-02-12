@@ -11,6 +11,8 @@ public partial class VenueLookup
 
     public int? VenueTypeId { get; set; }
 
+    public string? VenueName { get; set; }
+
     public virtual BuildingLookup? Building { get; set; }
 
     public virtual ICollection<BuildingVenue> BuildingVenues { get; set; } = new List<BuildingVenue>();

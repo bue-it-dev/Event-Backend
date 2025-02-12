@@ -11,5 +11,7 @@ public partial class Passport
 
     public string? PassportFile { get; set; }
 
+    public DateTime? CreatedAt { get; set; }
+
     public virtual EventEntity? Event { get; set; }
 }

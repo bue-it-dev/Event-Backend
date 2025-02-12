@@ -7,8 +7,6 @@ public partial class EventEntity
 {
     public int EventId { get; set; }
 
-    public int? IsAcademic { get; set; }
-
     public int? ApprovingDepTypeId { get; set; }
 
     public string EventTitle { get; set; } = null!;
@@ -25,9 +23,7 @@ public partial class EventEntity
 
     public int HasTransportation { get; set; }
 
-    public int BudgetlineType { get; set; }
-
-    public string BudgetlineName { get; set; } = null!;
+    public string? BudgetlineName { get; set; }
 
     public string? BudgetCode { get; set; }
 
@@ -56,6 +52,18 @@ public partial class EventEntity
     public int? IsStaffStudents { get; set; }
 
     public int? IsChairBoardPrisidentVcb { get; set; }
+
+    public DateTime? DecisionAt { get; set; }
+
+    public string? LedOfTheUniversityOrganizerFile { get; set; }
+
+    public string? OfficeOfPresedentFile { get; set; }
+
+    public string? VisitAgendaFile { get; set; }
+
+    public int? EmpId { get; set; }
+
+    public DateTime? ConfirmedAt { get; set; }
 
     public virtual ICollection<Accommodation> Accommodations { get; set; } = new List<Accommodation>();
 

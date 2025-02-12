@@ -59,7 +59,7 @@ namespace Event.Repository.Implementations
             if (entity != null)
             {
                 _dbSet.Remove(entity);
-                _unitOfWork.Save();
+                await _unitOfWork.Save();
             }
         }
         public async Task AddRangeAsync(IEnumerable<T> entities)

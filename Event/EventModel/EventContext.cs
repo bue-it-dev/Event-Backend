@@ -144,17 +144,12 @@ public partial class EventContext : DbContext
             entity.HasKey(e => e.ApprovalId).HasName("PK_BusinessApprovals");
 
             entity.Property(e => e.ApprovalId).HasColumnName("approvalID");
-            entity.Property(e => e.ApprovalLevelId).HasColumnName("approvalLevelID");
             entity.Property(e => e.CreatedAt)
                 .HasColumnType("datetime")
                 .HasColumnName("createdAt");
             entity.Property(e => e.EmpId).HasColumnName("empID");
             entity.Property(e => e.EventId).HasColumnName("eventId");
             entity.Property(e => e.Status).HasColumnName("status");
-
-            entity.HasOne(d => d.ApprovalLevel).WithMany(p => p.EventApprovals)
-                .HasForeignKey(d => d.ApprovalLevelId)
-                .HasConstraintName("FK_EventApprovals_EventApprovalLevelLookup");
 
             entity.HasOne(d => d.Event).WithMany(p => p.EventApprovals)
                 .HasForeignKey(d => d.EventId)
@@ -189,10 +184,12 @@ public partial class EventContext : DbContext
             entity.Property(e => e.BudgetCode).HasColumnName("budgetCode");
             entity.Property(e => e.BudgetCostCenter).HasColumnName("budgetCostCenter");
             entity.Property(e => e.BudgetlineName).HasColumnName("budgetlineName");
-            entity.Property(e => e.BudgetlineType).HasColumnName("budgetlineType");
             entity.Property(e => e.CreatedAt)
                 .HasColumnType("datetime")
                 .HasColumnName("created_at");
+            entity.Property(e => e.ConfirmedAt)
+            .HasColumnType("datetime")
+            .HasColumnName("confirmed_at");
             entity.Property(e => e.EndDateTime).HasColumnType("datetime");
             entity.Property(e => e.EventEndDate)
                 .HasColumnType("datetime")
@@ -203,7 +200,6 @@ public partial class EventContext : DbContext
             entity.Property(e => e.HasAccomdation).HasColumnName("hasAccomdation");
             entity.Property(e => e.HasIt).HasColumnName("hasIT");
             entity.Property(e => e.HasTransportation).HasColumnName("hasTransportation");
-            entity.Property(e => e.IsAcademic).HasColumnName("isAcademic");
             entity.Property(e => e.IsChairBoardPrisidentVcb).HasColumnName("isChairBoardPrisidentVCB");
             entity.Property(e => e.IsOthers).HasColumnName("isOthers");
             entity.Property(e => e.IsStaffStudents).HasColumnName("isStaffStudents");
@@ -267,7 +263,9 @@ public partial class EventContext : DbContext
             entity.Property(e => e.PassportId).HasColumnName("passportId");
             entity.Property(e => e.EventId).HasColumnName("eventId");
             entity.Property(e => e.PassportFile).HasColumnName("passportFile");
-
+            entity.Property(e => e.CreatedAt)
+    .HasColumnType("datetime")
+    .HasColumnName("created_at");
             entity.HasOne(d => d.Event).WithMany(p => p.Passports)
                 .HasForeignKey(d => d.EventId)
                 .HasConstraintName("FK_Passport_EventEntity");

@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using Event.Extensions;
+using Event.Controllers.Config;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,7 +30,15 @@ builder.Services.AddScoped(typeof(IGenericService<>), typeof(GenericService<>));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddCustomSwagger();
+builder.Services.AddJwtBearerAuthentication();
+builder.Services.AddControllersWithViews().AddNewtonsoftJson(options =>
+options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore).ConfigureApiBehaviorOptions(options =>
+{
+    // Adds a custom error response factory when ModelState is invalid
+    options.InvalidModelStateResponseFactory = InvalidModelStateResponseFactory.ProduceErrorResponse;
+
+});
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IOldHrmRepository, OldHrmRepository>();
 builder.Services.AddScoped<ITokenManager, TokenManager>();
@@ -37,7 +46,6 @@ builder.Services.AddScoped<IMailService, MailService>();
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
-builder.Services.AddJwtBearerAuthentication();
 
 
 var app = builder.Build();
@@ -48,8 +56,9 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    //app.UseSwagger();
+    //app.UseSwaggerUI();
+    app.UseCustomSwagger();
 }
 
 app.UseCors(builder => builder
@@ -58,6 +67,8 @@ app.UseCors(builder => builder
              .SetIsOriginAllowed((host) => true)
              .AllowCredentials()
         );
+
+
 
 app.UseHttpsRedirection();
 

@@ -6,6 +6,8 @@ namespace Event.Services.Interfaces
     public interface IEventService : IGenericService<EventEntity>
     {
         Task<EventDTO> AddEventData(EventDTO eventData, List<IFormFile> passportData);
+        Task SubmitEventAsync(int eventId);
+
 
     }
 }

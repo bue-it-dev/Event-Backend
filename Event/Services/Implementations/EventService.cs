@@ -4,6 +4,7 @@ using Event.EventModel;
 using Event.Models;
 using Event.Repository.Interfaces;
 using Event.Services.Interfaces;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace Event.Services.Implementations
@@ -13,6 +14,7 @@ namespace Event.Services.Implementations
 
 
         private readonly IMapper _mapper;
+        public readonly IEventRepository _eventRepository;
         private readonly IUnitOfWork _unitOfWork;
 
 
@@ -23,7 +25,7 @@ namespace Event.Services.Implementations
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
-
+            _eventRepository = eventRepository;
         }
 
 
@@ -75,67 +77,104 @@ namespace Event.Services.Implementations
                 _unitOfWork.Set<Accommodation>().AddRange(accommodation);
             }
 
+            var BuildingVenues = eventData.BuildingVenues
+                .Select(BuildingVenues => new BuildingVenue
+                {
+                    EventId = newEvent.EventId,
+                    VenueId = BuildingVenues.VenueId,
+                }).ToList();
 
-
-            //if (passportData != null && passportData.Any())
-            //{
-            //    var uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "passports");
-            //    if (!Directory.Exists(uploadFolder))
-            //    {
-            //        Directory.CreateDirectory(uploadFolder);
-            //    }
-
-            //    var passports = new List<Passport>();
-
-            //    foreach (var file in passportData) // ✅ Correct: Loop through uploaded files
-            //    {
-            //        try
-            //        {
-            //            // Generate a unique file name
-            //            var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(file.FileName)}";
-            //            var filePath = Path.Combine(uploadFolder, fileName);
-
-            //            // Save file to server
-            //            using (var stream = new FileStream(filePath, FileMode.Create))
-            //            {
-            //                await file.CopyToAsync(stream);
-            //            }
-
-            //            // Store only the file path in DB
-            //            passports.Add(new Passport
-            //            {
-            //                EventId = newEvent.EventId,
-            //                PassportFile = $"/uploads/passports/{fileName}"
-            //            });
-            //        }
-            //        catch (Exception ex)
-            //        {
-            //            Console.WriteLine($"Error saving file: {ex.Message}");
-            //        }
-            //    }
-
-            //    _unitOfWork.Set<Passport>().AddRange(passports);
-            //}
+            _unitOfWork.Set<BuildingVenue>().AddRange(BuildingVenues);
 
 
 
 
 
 
-            await _unitOfWork.Save();
-                return eventData;
+            var uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+
+            if (eventData.IsStaffStudents == 1)
+            {
+                newEvent.LedOfTheUniversityOrganizerFile = await _eventRepository.SaveFileAsync(eventData.LedOfTheUniversityOrganizerFile, uploadFolder);
+                if (eventData.IsChairBoardPrisidentVcb == 1)
+                {
+                    newEvent.OfficeOfPresedentFile = await _eventRepository.SaveFileAsync(eventData.OfficeOfPresedentFile, uploadFolder);
+                }
+            }
+
+            if (eventData.IsOthers != 0 && eventData.IsOthers != null)
+            {
+                newEvent.VisitAgendaFile = await _eventRepository.SaveFileAsync(eventData.VisitAgendaFile, uploadFolder);
+                if (eventData.IsOthers == 1) //Mean international guests
+                {
+                    if (passportData != null && passportData.Any())
+                    {
+                        var uploadFolderPassports = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "passports");
+                        if (!Directory.Exists(uploadFolderPassports))
+                        {
+                            Directory.CreateDirectory(uploadFolderPassports);
+                        }
+
+                        var passports = new List<Passport>();
+
+                        foreach (var file in passportData) // ✅ Correct: Loop through uploaded files
+                        {
+                            try
+                            {
+                                // Generate a unique file name
+                                var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(file.FileName)}";
+                                var filePath = Path.Combine(uploadFolderPassports, fileName);
+
+                                // Save file to server
+                                using (var stream = new FileStream(filePath, FileMode.Create))
+                                {
+                                    await file.CopyToAsync(stream);
+                                }
+
+                                // Store only the file path in DB
+                                passports.Add(new Passport
+                                {
+                                    EventId = newEvent.EventId,
+                                    PassportFile = $"/uploads/passports/{fileName}",
+                                    CreatedAt = DateTime.Now,
+                                });
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"Error saving file: {ex.Message}");
+                            }
+                        }
+
+                        _unitOfWork.Set<Passport>().AddRange(passports);
+                    }
+
+                }
             }
 
 
 
 
-
+            await _unitOfWork.Save();
+            return eventData;
         }
+
+        public async Task SubmitEventAsync(int eventId)
+        {
+            var eventData = await _eventRepository.GetAsync(e => e.EventId == eventId);
+            if (eventData == null)
+            {
+                await _eventRepository.SubmitAsync(eventData);
+            }
+           
         }
-    
+
+      
+    }
+}
 
 
 
-                    
-                
-            
+
+
+
+

@@ -9,7 +9,7 @@ public partial class EventApproval
 
     public int? EventId { get; set; }
 
-    public int? ApprovalLevelId { get; set; }
+    public int? UserTypeId { get; set; }
 
     public int? EmpId { get; set; }
 
@@ -17,7 +17,9 @@ public partial class EventApproval
 
     public DateTime? CreatedAt { get; set; }
 
-    public virtual EventApprovalLevelLookup? ApprovalLevel { get; set; }
+    public int? IsApprove { get; set; }
 
     public virtual EventEntity? Event { get; set; }
+
+    public virtual EventApprovalLevelLookup? UserType { get; set; }
 }

@@ -1,9 +1,8 @@
-﻿using Event.EventModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Event.DTOs
 {
-    public class EventDTO
+    public class EventGetDTO
     {
         public int EventId { get; set; }
         public int? ApprovingDepTypeId { get; set; }
@@ -44,24 +43,6 @@ namespace Event.DTOs
         public int? IsStaffStudents { get; set; }
 
         public int? IsChairBoardPrisidentVcb { get; set; }
-
-        public IFormFile? LedOfTheUniversityOrganizerFile { get; set; }
-
-        public IFormFile? OfficeOfPresedentFile { get; set; }
-
-        public IFormFile? VisitAgendaFile { get; set; }
         public DateTime? ConfirmedAt { get; set; }
-
-
-
-        public List<ItcomponentEventDTO> ItcomponentEvents { get; set; } = new List<ItcomponentEventDTO>();
-            public List<TransportationDTO> Transportations { get; set; } = new List<TransportationDTO>();
-            public List<AccommodationDTO> Accommodations { get; set; } = new List<AccommodationDTO>();
-            public List<BuildingVenuesDTO> BuildingVenues { get; set; } = new List<BuildingVenuesDTO>();
-        
-
-
-
-
     }
 }

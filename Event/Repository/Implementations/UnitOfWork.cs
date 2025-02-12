@@ -39,6 +39,7 @@ public class UnitOfWork : IUnitOfWork
         }
         catch (Exception ex)
         {
+            Console.WriteLine($"Error: {ex.InnerException?.Message ?? ex.Message}");
             throw ex;
         }
     }
