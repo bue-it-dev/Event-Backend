@@ -11,12 +11,15 @@ namespace Event.Repository.Implementations
     {
         private readonly EventContext _dbContext;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IWebHostEnvironment _environment;
 
-        public EventRepository(EventContext dbcontext, IUnitOfWork unitOfWork)
+
+        public EventRepository(EventContext dbcontext, IUnitOfWork unitOfWork, IWebHostEnvironment environment)
             : base(dbcontext, unitOfWork)
         {
             _dbContext = dbcontext;
             _unitOfWork = unitOfWork;
+            _environment = environment;
         }
 
         public async Task SubmitAsync(EventEntity eventData)
@@ -44,6 +47,7 @@ namespace Event.Repository.Implementations
                 .Where(e => e.EmpId == secondApprovalID)
                 .Select(e => e.UserTypeId)
                 .FirstOrDefaultAsync();
+
 
             approvalList.Add(new EventApproval
             {
@@ -178,6 +182,38 @@ namespace Event.Repository.Implementations
             }
         }
 
-       
+        public async Task<(byte[] FileData, string ContentType)> GetFileAsync(string filePath)
+        {
+            if (string.IsNullOrEmpty(filePath))
+            {
+                throw new ArgumentException("File path cannot be null or empty.");
+            }
+
+            string fullPath = Path.Combine(_environment.WebRootPath, filePath);
+
+            if (!System.IO.File.Exists(fullPath))
+            {
+                throw new FileNotFoundException("File not found.");
+            }
+
+            string contentType = GetContentType(fullPath);
+            byte[] fileBytes = await File.ReadAllBytesAsync(fullPath);
+
+            return (fileBytes, contentType);
+        }
+
+        private string GetContentType(string filePath)
+        {
+            string extension = Path.GetExtension(filePath).ToLower();
+            return extension switch
+            {
+                ".jpg" or ".jpeg" => "image/jpeg",
+                ".png" => "image/png",
+                ".pdf" => "application/pdf",
+                ".doc" or ".docx" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                _ => "application/octet-stream"
+            };
+        }
+
     }
 }

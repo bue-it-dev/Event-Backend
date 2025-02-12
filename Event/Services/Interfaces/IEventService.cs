@@ -7,6 +7,8 @@ namespace Event.Services.Interfaces
     {
         Task<EventDTO> AddEventData(EventDTO eventData, List<IFormFile> passportData);
         Task SubmitEventAsync(int eventId);
+        Task<EventGetDTO> GetEventDetailsById(int eventId);
+        Task<(byte[] FileData, string ContentType)> GetEventFileAsync(string filePath);
 
 
     }

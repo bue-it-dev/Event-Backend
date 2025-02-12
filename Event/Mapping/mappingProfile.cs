@@ -13,7 +13,7 @@ namespace Event.Mapping
                 .ForMember(dest => dest.Transportations,opt =>opt.Ignore())
                 .ForMember(dest => dest.Accommodations, opt => opt.Ignore()).ForMember(dest => dest.BuildingVenues, opt => opt.Ignore())
                 .ReverseMap();
-
+            CreateMap<EventGetDTO, EventEntity>().ReverseMap();
             CreateMap<ItcomponentEvent, ItcomponentEventDTO>().ReverseMap();
         }
     }

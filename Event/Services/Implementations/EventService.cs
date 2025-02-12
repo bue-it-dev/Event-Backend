@@ -109,7 +109,7 @@ namespace Event.Services.Implementations
                 {
                     if (passportData != null && passportData.Any())
                     {
-                        var uploadFolderPassports = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "passports");
+                        var uploadFolderPassports = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
                         if (!Directory.Exists(uploadFolderPassports))
                         {
                             Directory.CreateDirectory(uploadFolderPassports);
@@ -135,7 +135,7 @@ namespace Event.Services.Implementations
                                 passports.Add(new Passport
                                 {
                                     EventId = newEvent.EventId,
-                                    PassportFile = $"/uploads/passports/{fileName}",
+                                    PassportFile = $"/uploads/{fileName}",
                                     CreatedAt = DateTime.Now,
                                 });
                             }
@@ -168,7 +168,24 @@ namespace Event.Services.Implementations
            
         }
 
-      
+        public async Task<EventGetDTO> GetEventDetailsById(int eventId)
+        {
+            var eventData = await _eventRepository.GetAsync(e =>e.EventId == eventId);
+            try
+            {
+                var eventGetDTO = _mapper.Map<EventGetDTO>(eventData);
+                return eventGetDTO;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<(byte[] FileData, string ContentType)> GetEventFileAsync(string filePath)
+        {
+            return await _eventRepository.GetFileAsync(filePath);
+        }
     }
 }
 

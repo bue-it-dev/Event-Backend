@@ -43,6 +43,9 @@ namespace Event.DTOs
         public int? IsStaffStudents { get; set; }
 
         public int? IsChairBoardPrisidentVcb { get; set; }
+        public string? LedOfTheUniversityOrganizerFilePath { get; set; }
+        public string? OfficeOfPresedentFilePath { get; set; }
+        public string? VisitAgendaFilePath { get; set; }
         public DateTime? ConfirmedAt { get; set; }
     }
 }
