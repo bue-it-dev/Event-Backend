@@ -33,10 +33,6 @@ public partial class EventEntity
 
     public DateTime? UpdateAt { get; set; }
 
-    public DateTime? EndDateTime { get; set; }
-
-    public DateTime? StartDateTime { get; set; }
-
     public string? OrganizerName { get; set; }
 
     public int? OrganizerMobile { get; set; }
@@ -68,8 +64,6 @@ public partial class EventEntity
     public virtual ICollection<Accommodation> Accommodations { get; set; } = new List<Accommodation>();
 
     public virtual ICollection<BuildingVenue> BuildingVenues { get; set; } = new List<BuildingVenue>();
-
-    public virtual ICollection<EventApproval> EventApprovals { get; set; } = new List<EventApproval>();
 
     public virtual ICollection<ItcomponentEvent> ItcomponentEvents { get; set; } = new List<ItcomponentEvent>();
 

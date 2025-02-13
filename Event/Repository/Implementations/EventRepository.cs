@@ -215,5 +215,36 @@ namespace Event.Repository.Implementations
             };
         }
 
+        public async Task<string?> ReplaceFileAsync(string? existingFilePath, IFormFile? newFile, string folderPath)
+        {
+            string? newFilePath = existingFilePath; // Default to existing file path
+
+            if (newFile != null)
+            {
+                // Delete old file if it exists
+                if (!string.IsNullOrEmpty(existingFilePath))
+                {
+                    var fullOldPath = Path.Combine("wwwroot", existingFilePath.TrimStart('/'));
+                    if (File.Exists(fullOldPath))
+                    {
+                        File.Delete(fullOldPath);
+                    }
+                }
+
+                // Save the new file
+                newFilePath = await SaveFileAsync(newFile, folderPath);
+            }
+
+            return newFilePath;
+        }
+
+        public async Task<EventEntity> GetWithIncludes(int eventId)
+        {
+            var eventData = await _dbContext.EventEntities.Include(e => e.Transportations).
+                Include(e => e.Accommodations).Include(e => e.ItcomponentEvents).FirstOrDefaultAsync();
+            return eventData;
+        }
+
+
     }
 }

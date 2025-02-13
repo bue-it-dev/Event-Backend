@@ -9,6 +9,7 @@ namespace Event.Services.Interfaces
         Task SubmitEventAsync(int eventId);
         Task<EventGetDTO> GetEventDetailsById(int eventId);
         Task<(byte[] FileData, string ContentType)> GetEventFileAsync(string filePath);
+        Task<eventUpdatedDTO> UpdateEvent(int eventId, eventUpdatedDTO eventUpdated);
 
 
     }

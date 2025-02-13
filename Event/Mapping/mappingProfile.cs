@@ -15,6 +15,7 @@ namespace Event.Mapping
                 .ReverseMap();
             CreateMap<EventGetDTO, EventEntity>().ReverseMap();
             CreateMap<ItcomponentEvent, ItcomponentEventDTO>().ReverseMap();
+            CreateMap<eventUpdatedDTO, EventEntity>().ReverseMap();
         }
     }
 }

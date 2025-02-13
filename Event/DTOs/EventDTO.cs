@@ -54,7 +54,7 @@ namespace Event.DTOs
 
 
 
-        public List<ItcomponentEventDTO> ItcomponentEvents { get; set; } = new List<ItcomponentEventDTO>();
+            public List<ItcomponentEventDTO> ItcomponentEvents { get; set; } = new List<ItcomponentEventDTO>();
             public List<TransportationDTO> Transportations { get; set; } = new List<TransportationDTO>();
             public List<AccommodationDTO> Accommodations { get; set; } = new List<AccommodationDTO>();
             public List<BuildingVenuesDTO> BuildingVenues { get; set; } = new List<BuildingVenuesDTO>();

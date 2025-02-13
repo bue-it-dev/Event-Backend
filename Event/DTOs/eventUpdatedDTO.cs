@@ -1,10 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Event.DTOs
+﻿namespace Event.DTOs
 {
-    public class EventGetDTO
+    public class eventUpdatedDTO
     {
-        public int EventId { get; set; }
         public int? ApprovingDepTypeId { get; set; }
 
         public string EventTitle { get; set; } = null!;
@@ -21,18 +18,17 @@ namespace Event.DTOs
 
         public int HasTransportation { get; set; }
 
+        public DateTime? UpdateAt { get; set; }
+
         public DateTime? EndDateTime { get; set; }
 
         public DateTime? StartDateTime { get; set; }
 
         public string? OrganizerName { get; set; }
 
-        [RegularExpression(@"^01(0|1|2|5)\d{8}$", ErrorMessage = "Please enter a valid Egyptian phone number.")]
-        public string OrganizerMobile { get; set; }
+        public int? OrganizerMobile { get; set; }
 
-        [RegularExpression(@"^[1-9]{4}$", ErrorMessage = "Extension must be exactly 4 digits, using only numbers 1-9.")]
-        public string OrganizerExtention { get; set; }
-
+        public int? OrganizerExtention { get; set; }
 
         public string? ApprovingDeptName { get; set; }
 
@@ -43,9 +39,11 @@ namespace Event.DTOs
         public int? IsStaffStudents { get; set; }
 
         public int? IsChairBoardPrisidentVcb { get; set; }
-        public IFormFile? LedOfTheUniversityOrganizerFilePath { get; set; }
-        public IFormFile? OfficeOfPresedentFilePath { get; set; }
-        public IFormFile? VisitAgendaFilePath { get; set; }
-        public DateTime? ConfirmedAt { get; set; }
+
+        public IFormFile? LedOfTheUniversityOrganizerFile { get; set; }
+
+        public IFormFile? OfficeOfPresedentFile { get; set; }
+
+        public IFormFile? VisitAgendaFile { get; set; }
     }
 }

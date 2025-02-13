@@ -151,10 +151,10 @@ public partial class EventContext : DbContext
             entity.Property(e => e.EventId).HasColumnName("eventId");
             entity.Property(e => e.Status).HasColumnName("status");
 
-            entity.HasOne(d => d.Event).WithMany(p => p.EventApprovals)
-                .HasForeignKey(d => d.EventId)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_BusinessApprovals_BusinessRequest");
+            //entity.HasOne(d => d.EventId).WithMany(p => p.EventApprovals)
+            //    .HasForeignKey(d => d.EventId)
+            //    .OnDelete(DeleteBehavior.Cascade)
+            //    .HasConstraintName("FK_BusinessApprovals_BusinessRequest");
         });
 
         modelBuilder.Entity<EventApprovalLevelLookup>(entity =>
@@ -187,13 +187,7 @@ public partial class EventContext : DbContext
             entity.Property(e => e.CreatedAt)
                 .HasColumnType("datetime")
                 .HasColumnName("created_at");
-            entity.Property(e => e.ConfirmedAt)
-            .HasColumnType("datetime")
-            .HasColumnName("confirmed_at");
-            entity.Property(e => e.EndDateTime).HasColumnType("datetime");
-            entity.Property(e => e.EventEndDate)
-                .HasColumnType("datetime")
-                .HasColumnName("eventEndDate");
+        
             entity.Property(e => e.EventStartDate)
                 .HasColumnType("datetime")
                 .HasColumnName("eventStartDate");
@@ -208,7 +202,7 @@ public partial class EventContext : DbContext
             entity.Property(e => e.OrganizerName)
                 .HasMaxLength(50)
                 .HasColumnName("organizerName");
-            entity.Property(e => e.StartDateTime).HasColumnType("datetime");
+            
             entity.Property(e => e.UpdateAt)
                 .HasColumnType("datetime")
                 .HasColumnName("update_at");

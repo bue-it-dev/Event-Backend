@@ -51,6 +51,7 @@ namespace Event.Repository.Implementations
         {
             _dbSet.Attach(entity);
             _eventContext.Entry(entity).State = EntityState.Modified;
+            await _unitOfWork.Save();
         }
 
         public async Task DeleteAsync(int id)

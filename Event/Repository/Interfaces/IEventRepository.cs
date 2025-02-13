@@ -9,6 +9,8 @@ namespace Event.Repository.Interfaces
         Task<string?> SaveFileAsync(IFormFile? file, string folderPath);
         Task SubmitAsync(EventEntity eventData);
         Task<(byte[] FileData, string ContentType)> GetFileAsync(string filePath);
-
+        Task<string?> ReplaceFileAsync(string? existingFilePath, IFormFile? newFile, string folderPath);
+        Task<EventEntity> GetWithIncludes(int eventId);
     }
 }
+    

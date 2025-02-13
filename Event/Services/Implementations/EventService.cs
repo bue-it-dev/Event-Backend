@@ -186,8 +186,71 @@ namespace Event.Services.Implementations
         {
             return await _eventRepository.GetFileAsync(filePath);
         }
+
+        public async Task<eventUpdatedDTO> UpdateEvent(int eventId, eventUpdatedDTO eventUpdatedData)
+        {
+            var eventBeforeUpdate = await _eventRepository.GetAsync(e => e.EventId == eventId);
+            if (eventBeforeUpdate == null) throw new Exception("Event not found");
+            var mapped = _mapper.Map(eventUpdatedData, eventBeforeUpdate);
+            eventBeforeUpdate.UpdateAt = DateTime.Now;
+
+            EventEntity eventWithIncludies = await _eventRepository.GetWithIncludes(eventId);
+            if (eventWithIncludies != null)
+            {
+                if (eventUpdatedData.HasIt == 1)
+                {
+                    foreach (var it in eventWithIncludies.ItcomponentEvents)
+                    {
+                         _unitOfWork.Set<ItcomponentEvent>().Update(it);
+                    }
+                }
+
+                if (eventUpdatedData.HasTransportation == 1)
+                {
+                    foreach (var transportation in eventWithIncludies.Transportations)
+                    {
+                        _unitOfWork.Set<Transportation>().Update(transportation);
+                    }
+                }
+
+                if (eventUpdatedData.HasAccomdation == 1)
+                {
+                    foreach (var accommodation in eventWithIncludies.Accommodations)
+                    {
+                        _unitOfWork.Set<Accommodation>().Update(accommodation);
+                    }
+                }
+            }
+            string uploadFolder = "wwwroot/uploads/documents";
+
+            eventBeforeUpdate.LedOfTheUniversityOrganizerFile = await _eventRepository.ReplaceFileAsync(
+                eventBeforeUpdate.LedOfTheUniversityOrganizerFile, 
+                eventUpdatedData.LedOfTheUniversityOrganizerFile,
+                uploadFolder
+            );
+
+            eventBeforeUpdate.OfficeOfPresedentFile = await _eventRepository.ReplaceFileAsync(
+                eventBeforeUpdate.OfficeOfPresedentFile,
+                eventUpdatedData.OfficeOfPresedentFile,
+                uploadFolder
+            );
+
+            eventBeforeUpdate.VisitAgendaFile = await _eventRepository.ReplaceFileAsync(
+                eventBeforeUpdate.VisitAgendaFile,
+                eventUpdatedData.VisitAgendaFile,
+                uploadFolder
+            );
+
+            await _unitOfWork.Save();
+            return eventUpdatedData;
+
+        }
+
+
+
     }
 }
+
 
 
 
