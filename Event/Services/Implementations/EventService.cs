@@ -165,12 +165,12 @@ namespace Event.Services.Implementations
             {
                 await _eventRepository.SubmitAsync(eventData);
             }
-           
+
         }
 
         public async Task<EventGetDTO> GetEventDetailsById(int eventId)
         {
-            var eventData = await _eventRepository.GetAsync(e =>e.EventId == eventId);
+            var eventData = await _eventRepository.GetAsync(e => e.EventId == eventId);
             try
             {
                 var eventGetDTO = _mapper.Map<EventGetDTO>(eventData);
@@ -187,7 +187,7 @@ namespace Event.Services.Implementations
             return await _eventRepository.GetFileAsync(filePath);
         }
 
-        public async Task<eventUpdatedDTO> UpdateEvent(int eventId, eventUpdatedDTO eventUpdatedData)
+        public async Task<eventUpdatedDTO> UpdateEvent(int eventId, eventUpdatedDTO eventUpdatedData, List<IFormFile> passportData)
         {
             var eventBeforeUpdate = await _eventRepository.GetAsync(e => e.EventId == eventId);
             if (eventBeforeUpdate == null) throw new Exception("Event not found");
@@ -197,63 +197,151 @@ namespace Event.Services.Implementations
             EventEntity eventWithIncludies = await _eventRepository.GetWithIncludes(eventId);
             if (eventWithIncludies != null)
             {
-                if (eventUpdatedData.HasIt == 1)
+                if (eventWithIncludies != null)
                 {
-                    foreach (var it in eventWithIncludies.ItcomponentEvents)
+                    _unitOfWork.Set<ItcomponentEvent>().RemoveRange(eventWithIncludies.ItcomponentEvents);
+                    if (eventUpdatedData.HasIt == 1)
                     {
-                         _unitOfWork.Set<ItcomponentEvent>().Update(it);
+                        foreach (var it in eventUpdatedData.ItcomponentEvents) 
+                        {
+                            _unitOfWork.Set<ItcomponentEvent>().Add(new ItcomponentEvent
+                            {
+                                EventId = eventId,
+                                ItcomponentId = it.ItcomponentId
+                            });
+                        }
                     }
-                }
 
-                if (eventUpdatedData.HasTransportation == 1)
-                {
-                    foreach (var transportation in eventWithIncludies.Transportations)
+                    _unitOfWork.Set<Transportation>().RemoveRange(eventWithIncludies.Transportations);
+                    if (eventUpdatedData.HasTransportation == 1)
                     {
-                        _unitOfWork.Set<Transportation>().Update(transportation);
+                        foreach (var transportation in eventUpdatedData.Transportations)
+                        {
+                            _unitOfWork.Set<Transportation>().Add(new Transportation
+                            {
+                                EventId = eventId,
+                                TransportationTypeId = transportation.TransportationTypeId,
+                                StartDate = transportation.StartDate,
+                                EndDate = transportation.EndDate
+                            });
+                        }
                     }
-                }
 
-                if (eventUpdatedData.HasAccomdation == 1)
-                {
-                    foreach (var accommodation in eventWithIncludies.Accommodations)
+                    _unitOfWork.Set<Accommodation>().RemoveRange(eventWithIncludies.Accommodations);
+                    if (eventUpdatedData.HasAccomdation == 1)
                     {
-                        _unitOfWork.Set<Accommodation>().Update(accommodation);
+                        foreach (var accommodation in eventUpdatedData.Accommodations)
+                        {
+                            _unitOfWork.Set<Accommodation>().Add(new Accommodation
+                            {
+                                EventId = eventId,
+                                RoomTypeId = accommodation.RoomTypeId
+                            });
+                        }
                     }
                 }
             }
-            string uploadFolder = "wwwroot/uploads/documents";
 
-            eventBeforeUpdate.LedOfTheUniversityOrganizerFile = await _eventRepository.ReplaceFileAsync(
-                eventBeforeUpdate.LedOfTheUniversityOrganizerFile, 
-                eventUpdatedData.LedOfTheUniversityOrganizerFile,
-                uploadFolder
-            );
+            var uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
 
-            eventBeforeUpdate.OfficeOfPresedentFile = await _eventRepository.ReplaceFileAsync(
-                eventBeforeUpdate.OfficeOfPresedentFile,
-                eventUpdatedData.OfficeOfPresedentFile,
-                uploadFolder
-            );
+            if (eventUpdatedData.IsStaffStudents == 1)
+            {
+                eventBeforeUpdate.LedOfTheUniversityOrganizerFile = await _eventRepository.ReplaceFileAsync(
+                    eventBeforeUpdate.LedOfTheUniversityOrganizerFile,
+                    eventUpdatedData.LedOfTheUniversityOrganizerFile,
+                    uploadFolder);
 
-            eventBeforeUpdate.VisitAgendaFile = await _eventRepository.ReplaceFileAsync(
-                eventBeforeUpdate.VisitAgendaFile,
-                eventUpdatedData.VisitAgendaFile,
-                uploadFolder
-            );
+                if (eventUpdatedData.IsChairBoardPrisidentVcb == 1)
+                {
+                    eventBeforeUpdate.OfficeOfPresedentFile = await _eventRepository.ReplaceFileAsync(
+                        eventBeforeUpdate.OfficeOfPresedentFile,
+                        eventUpdatedData.OfficeOfPresedentFile,
+                        uploadFolder);
+                }
+            }
+            else
+            {
+                await _eventRepository.DeleteFileAsync(eventBeforeUpdate.LedOfTheUniversityOrganizerFile);
+                eventBeforeUpdate.LedOfTheUniversityOrganizerFile = null;
+
+                await _eventRepository.DeleteFileAsync(eventBeforeUpdate.OfficeOfPresedentFile);
+                eventBeforeUpdate.OfficeOfPresedentFile = null;
+            }
+
+            if (eventUpdatedData.IsOthers != 0 && eventUpdatedData.IsOthers != null)
+            {
+                eventBeforeUpdate.VisitAgendaFile = await _eventRepository.ReplaceFileAsync(
+                    eventBeforeUpdate.VisitAgendaFile,
+                    eventUpdatedData.VisitAgendaFile,
+                    uploadFolder
+                );
+
+                var existingPassports = _unitOfWork.Set<Passport>().Where(p => p.EventId == eventBeforeUpdate.EventId).ToList();
+
+                if (eventUpdatedData.IsOthers == 1) // Means international guests
+                {
+                    foreach (var passport in existingPassports)
+                    {
+                        await _eventRepository.DeleteFileAsync(passport.PassportFile);
+                    }
+                    _unitOfWork.Set<Passport>().RemoveRange(existingPassports);
+
+                    if (passportData != null && passportData.Any())
+                    {
+                        var uploadFolderPassports = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                        if (!Directory.Exists(uploadFolderPassports))
+                        {
+                            Directory.CreateDirectory(uploadFolderPassports);
+                        }
+
+                        var newPassports = new List<Passport>();
+
+                        foreach (var file in passportData)
+                        {
+                            try
+                            {
+                                var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(file.FileName)}";
+                                var filePath = Path.Combine(uploadFolderPassports, fileName);
+
+                                using (var stream = new FileStream(filePath, FileMode.Create))
+                                {
+                                    await file.CopyToAsync(stream);
+                                }
+
+                                newPassports.Add(new Passport
+                                {
+                                    EventId = eventBeforeUpdate.EventId,
+                                    PassportFile = $"/uploads/{fileName}",
+                                    CreatedAt = DateTime.Now,
+                                });
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"Error saving file: {ex.Message}");
+                            }
+                        }
+
+                        if (newPassports.Any())
+                        {
+                            _unitOfWork.Set<Passport>().AddRange(newPassports);
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var passport in existingPassports)
+                    {
+                        await _eventRepository.DeleteFileAsync(passport.PassportFile);
+                    }
+                    _unitOfWork.Set<Passport>().RemoveRange(existingPassports);
+                }
+            }
 
             await _unitOfWork.Save();
             return eventUpdatedData;
-
         }
-
-
-
     }
 }
-
-
-
-
 
 
 

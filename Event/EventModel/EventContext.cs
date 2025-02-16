@@ -149,12 +149,9 @@ public partial class EventContext : DbContext
                 .HasColumnName("createdAt");
             entity.Property(e => e.EmpId).HasColumnName("empID");
             entity.Property(e => e.EventId).HasColumnName("eventId");
+            entity.Property(e => e.IsApprove).HasColumnName("isApprove");
             entity.Property(e => e.Status).HasColumnName("status");
-
-            //entity.HasOne(d => d.EventId).WithMany(p => p.EventApprovals)
-            //    .HasForeignKey(d => d.EventId)
-            //    .OnDelete(DeleteBehavior.Cascade)
-            //    .HasConstraintName("FK_BusinessApprovals_BusinessRequest");
+            entity.Property(e => e.UserTypeId).HasColumnName("userTypeId");
         });
 
         modelBuilder.Entity<EventApprovalLevelLookup>(entity =>
@@ -184,10 +181,17 @@ public partial class EventContext : DbContext
             entity.Property(e => e.BudgetCode).HasColumnName("budgetCode");
             entity.Property(e => e.BudgetCostCenter).HasColumnName("budgetCostCenter");
             entity.Property(e => e.BudgetlineName).HasColumnName("budgetlineName");
+            entity.Property(e => e.ConfirmedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("confirmed_at");
             entity.Property(e => e.CreatedAt)
                 .HasColumnType("datetime")
                 .HasColumnName("created_at");
-        
+            entity.Property(e => e.DecisionAt).HasColumnType("datetime");
+            entity.Property(e => e.EmpId).HasColumnName("empId");
+            entity.Property(e => e.EventEndDate)
+                .HasColumnType("datetime")
+                .HasColumnName("eventEndDate");
             entity.Property(e => e.EventStartDate)
                 .HasColumnType("datetime")
                 .HasColumnName("eventStartDate");
@@ -197,15 +201,16 @@ public partial class EventContext : DbContext
             entity.Property(e => e.IsChairBoardPrisidentVcb).HasColumnName("isChairBoardPrisidentVCB");
             entity.Property(e => e.IsOthers).HasColumnName("isOthers");
             entity.Property(e => e.IsStaffStudents).HasColumnName("isStaffStudents");
+            entity.Property(e => e.LedOfTheUniversityOrganizerFile).HasColumnName("ledOfTheUniversityOrganizerFile");
             entity.Property(e => e.OrganizerExtention).HasColumnName("organizerExtention");
             entity.Property(e => e.OrganizerMobile).HasColumnName("organizerMobile");
             entity.Property(e => e.OrganizerName)
                 .HasMaxLength(50)
                 .HasColumnName("organizerName");
-            
             entity.Property(e => e.UpdateAt)
                 .HasColumnType("datetime")
                 .HasColumnName("update_at");
+            entity.Property(e => e.VisitAgendaFile).HasColumnName("visitAgendaFile");
         });
 
         modelBuilder.Entity<ItcomponentEvent>(entity =>
@@ -255,14 +260,16 @@ public partial class EventContext : DbContext
             entity.ToTable("Passport");
 
             entity.Property(e => e.PassportId).HasColumnName("passportId");
+            entity.Property(e => e.CreatedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("created_at");
             entity.Property(e => e.EventId).HasColumnName("eventId");
             entity.Property(e => e.PassportFile).HasColumnName("passportFile");
-            entity.Property(e => e.CreatedAt)
-    .HasColumnType("datetime")
-    .HasColumnName("created_at");
+
             entity.HasOne(d => d.Event).WithMany(p => p.Passports)
                 .HasForeignKey(d => d.EventId)
-                .HasConstraintName("FK_Passport_EventEntity");
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_EventEntity_RelatedEntity");
         });
 
         modelBuilder.Entity<RoomLookup>(entity =>
@@ -336,11 +343,15 @@ public partial class EventContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("userName");
             entity.Property(e => e.UserTypeId).HasColumnName("userTypeID");
+
+            entity.HasOne(d => d.UserType).WithMany(p => p.Users)
+                .HasForeignKey(d => d.UserTypeId)
+                .HasConstraintName("FK_User_User");
         });
 
         modelBuilder.Entity<UserTypeLookup>(entity =>
         {
-            entity.HasKey(e => e.RowId).HasName("PK_userTypeLooku[");
+            entity.HasKey(e => e.RowId);
 
             entity.ToTable("userTypeLookup");
 
@@ -359,6 +370,7 @@ public partial class EventContext : DbContext
 
             entity.Property(e => e.VenueId).HasColumnName("venueId");
             entity.Property(e => e.BuildingId).HasColumnName("buildingID");
+            entity.Property(e => e.VenueName).HasColumnName("venueName");
             entity.Property(e => e.VenueTypeId).HasColumnName("venueTypeID");
 
             entity.HasOne(d => d.Building).WithMany(p => p.VenueLookups)

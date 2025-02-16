@@ -24,4 +24,6 @@ public partial class User
     public int? DepId { get; set; }
 
     public byte? IsAcadmic { get; set; }
+
+    public virtual UserTypeLookup? UserType { get; set; }
 }

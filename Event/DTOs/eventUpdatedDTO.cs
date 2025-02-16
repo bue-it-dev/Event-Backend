@@ -18,12 +18,6 @@
 
         public int HasTransportation { get; set; }
 
-        public DateTime? UpdateAt { get; set; }
-
-        public DateTime? EndDateTime { get; set; }
-
-        public DateTime? StartDateTime { get; set; }
-
         public string? OrganizerName { get; set; }
 
         public int? OrganizerMobile { get; set; }
@@ -45,5 +39,11 @@
         public IFormFile? OfficeOfPresedentFile { get; set; }
 
         public IFormFile? VisitAgendaFile { get; set; }
+
+        public List<ItcomponentEventDTO> ItcomponentEvents { get; set; } = new List<ItcomponentEventDTO>();
+        public List<TransportationDTO> Transportations { get; set; } = new List<TransportationDTO>();
+        public List<AccommodationDTO> Accommodations { get; set; } = new List<AccommodationDTO>();
+
+
     }
 }

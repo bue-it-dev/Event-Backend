@@ -240,11 +240,22 @@ namespace Event.Repository.Implementations
 
         public async Task<EventEntity> GetWithIncludes(int eventId)
         {
-            var eventData = await _dbContext.EventEntities.Include(e => e.Transportations).
-                Include(e => e.Accommodations).Include(e => e.ItcomponentEvents).FirstOrDefaultAsync();
-            return eventData;
+            return await _dbContext.EventEntities
+                .Include(e => e.Transportations)
+                .Include(e => e.Accommodations)
+                .Include(e => e.ItcomponentEvents)
+                .FirstOrDefaultAsync(e => e.EventId == eventId);
         }
 
+
+        public async Task DeleteFileAsync(string filePath)
+        {
+            var fullPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", filePath.TrimStart('/'));
+            if (File.Exists(fullPath))
+            {
+                File.Delete(fullPath);
+            }
+        }
 
     }
 }
