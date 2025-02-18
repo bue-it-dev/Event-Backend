@@ -257,5 +257,16 @@ namespace Event.Repository.Implementations
             }
         }
 
+        public async Task<List<ApprovalSchema>> GetApprovalDepartmentSchema()
+        {
+            var departments = await _dbContext.ApprovalSchemas.ToListAsync();
+            return departments;
+        }
+
+        public async Task<List<ItcomponentEvent>> GetItComponents()
+        {
+            var ItComponents = await _dbContext.ItcomponentEvents.ToListAsync();
+            return ItComponents;
+        }
     }
 }

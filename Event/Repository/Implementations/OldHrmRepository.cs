@@ -17,22 +17,22 @@ namespace Event.Repository.Implementations
         {
             _context = context;
         }
-        public async Task<Buecarinfouser> FindOneAsync( string code )
+        public async Task<Buecarinfouser> FindOneAsync(string code)
         {
-            var queryResult = await ( from emp in _context.BueEmpEmployees
-                                join user in _context.BueUsers
-                                on emp.Id equals user.EmpId
-                                where emp.Code == code
-                                select new Buecarinfouser
-                                {
-                                    FirstName = emp.Fname,
-                                    MiddleName = emp.Mname,
-                                    LastName = emp.Lname,
-                                    UserName = user.UserName,
-                                    EmployeeId = emp.Id,
-                                    Code = emp.Code,
+            var queryResult = await (from emp in _context.BueEmpEmployees
+                                     join user in _context.BueUsers
+                                     on emp.Id equals user.EmpId
+                                     where emp.Code == code
+                                     select new Buecarinfouser
+                                     {
+                                         FirstName = emp.Fname,
+                                         MiddleName = emp.Mname,
+                                         LastName = emp.Lname,
+                                         UserName = user.UserName,
+                                         EmployeeId = emp.Id,
+                                         Code = emp.Code,
 
-                                } ).FirstOrDefaultAsync();
+                                     }).FirstOrDefaultAsync();
             return queryResult;
         }
 
@@ -54,39 +54,49 @@ namespace Event.Repository.Implementations
 
         public async Task<EmployeeDTO> GetEmployeebyUsername(string username)
         {
-            var employee = await (from U in _context.BueUsers
-                                  join Employee in _context.BueEmpEmployees
-                                  on U.EmpId equals Employee.Id into BUEUserGroup
-                                  from E in BUEUserGroup.DefaultIfEmpty()
+            try
+            {
 
-                                  join D in _context.BueEmpDepartments
-                                  on E.DepartmentId equals D.Id
 
-                                  join T in _context.BueJobsAndTitles
-                                  on E.JobId equals T.Id
+                var employee = await (from U in _context.BueUsers
+                                      join Employee in _context.BueEmpEmployees
+                                      on U.EmpId equals Employee.Id into BUEUserGroup
+                                      from E in BUEUserGroup.DefaultIfEmpty()
 
-                                  join C in _context.Buecarinfousers
-                                  on E.Id equals C.EmployeeId into EmployeeUser
-                                  from C in EmployeeUser.DefaultIfEmpty()
+                                      join D in _context.BueEmpDepartments
+                                      on E.DepartmentId equals D.Id
 
-                                  join R in _context.Buecarinforoles
-                                  on C.RoleId equals R.RoleId into UserRole
-                                  from R in UserRole.DefaultIfEmpty()
+                                      join T in _context.BueJobsAndTitles
+                                      on E.JobId equals T.Id
 
-                                  where U.UserName == username
-                                  select new EmployeeDTO
-                                  {
-                                      id = E.Id,
-                                      Username=U.UserName,
-                                      FullName = E.Fname + " " + E.Mname + " " + E.Lname,
-                                      JobID = T.Id,
-                                      JobName = T.JobTitle,
-                                      departmentID= D.Id,
-                                      departmentName=D.DepartmentName,
-                                      RoleID=R.RoleId,
-                                      RoleName = R == null ? "User": R.RoleName
-                                  }).FirstOrDefaultAsync();
-            return employee;
+                                      //join C in _context.Buecarinfousers
+                                      //on E.Id equals C.EmployeeId into EmployeeUser
+                                      //from C in EmployeeUser.DefaultIfEmpty()
+
+                                      //join R in _context.Buecarinforoles
+                                      //on C.RoleId equals R.RoleId into UserRole
+                                      //from R in UserRole.DefaultIfEmpty()
+
+                                      where U.UserName == username
+                                      select new EmployeeDTO
+                                      {
+                                          id = E.Id,
+                                          Username = U.UserName,
+                                          FullName = E.Fname + " " + E.Mname + " " + E.Lname,
+                                          JobID = T.Id,
+                                          JobName = T.JobTitle,
+                                          departmentID = D.Id,
+                                          departmentName = D.DepartmentName,
+                                          //RoleID = R.RoleId,
+                                          //RoleName = R == null ? "User" : R.RoleName
+                                      }).FirstOrDefaultAsync();
+                if (employee != null)
+                    return employee;
+                else
+                    return null;
+            }
+            catch (Exception e)
+            { throw e; }
         }
     }
 }

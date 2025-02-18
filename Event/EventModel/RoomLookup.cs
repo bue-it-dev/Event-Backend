@@ -8,6 +8,4 @@ public partial class RoomLookup
     public int RoomTypeId { get; set; }
 
     public string RoomTypeName { get; set; } = null!;
-
-    public virtual ICollection<Accommodation> Accommodations { get; set; } = new List<Accommodation>();
 }

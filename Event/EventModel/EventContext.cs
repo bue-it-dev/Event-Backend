@@ -70,6 +70,10 @@ public partial class EventContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("endDate");
             entity.Property(e => e.EventId).HasColumnName("eventId");
+            entity.Property(e => e.NumOfRooms)
+                .HasMaxLength(10)
+                .IsFixedLength()
+                .HasColumnName("numOfRooms");
             entity.Property(e => e.RoomTypeId).HasColumnName("roomTypeId");
             entity.Property(e => e.StartDate)
                 .HasColumnType("datetime")
@@ -78,10 +82,6 @@ public partial class EventContext : DbContext
             entity.HasOne(d => d.Event).WithMany(p => p.Accommodations)
                 .HasForeignKey(d => d.EventId)
                 .HasConstraintName("FK__Accommoda__event__5812160E");
-
-            entity.HasOne(d => d.RoomType).WithMany(p => p.Accommodations)
-                .HasForeignKey(d => d.RoomTypeId)
-                .HasConstraintName("FK__Accommoda__roomT__59063A47");
         });
 
         modelBuilder.Entity<ApprovalSchema>(entity =>
@@ -296,6 +296,7 @@ public partial class EventContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("endDate");
             entity.Property(e => e.EventId).HasColumnName("eventId");
+            entity.Property(e => e.Number).HasColumnName("number");
             entity.Property(e => e.StartDate)
                 .HasColumnType("datetime")
                 .HasColumnName("startDate");

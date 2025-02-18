@@ -46,6 +46,8 @@ builder.Services.AddScoped<IMailService, MailService>();
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
+builder.Services.AddTransient<IUserRoleServices, UserRoleServices>();
+builder.Services.AddTransient<IUserInfoRepository, UserInfoRepository>();
 
 
 var app = builder.Build();

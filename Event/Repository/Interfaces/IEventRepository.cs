@@ -12,6 +12,10 @@ namespace Event.Repository.Interfaces
         Task<string?> ReplaceFileAsync(string? existingFilePath, IFormFile? newFile, string folderPath);
         Task<EventEntity> GetWithIncludes(int eventId);
         Task DeleteFileAsync(string filePath);
+        Task<List<ApprovalSchema>> GetApprovalDepartmentSchema();
+        Task<List<ItcomponentEvent>> GetItComponents();
+
+
     }
 }
     

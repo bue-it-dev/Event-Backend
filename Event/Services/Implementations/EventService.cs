@@ -340,6 +340,18 @@ namespace Event.Services.Implementations
             await _unitOfWork.Save();
             return eventUpdatedData;
         }
+
+        public async Task<List<ApprovalSchema>> GetApprovalSchemaDepartments()
+        {
+            var department = await _eventRepository.GetApprovalDepartmentSchema();
+            return department;
+        }
+
+        public async Task<List<ItcomponentEvent>> GetItComponents()
+        {
+            var ItComponents = await _eventRepository.GetItComponents();
+            return ItComponents;
+        }
     }
 }
 

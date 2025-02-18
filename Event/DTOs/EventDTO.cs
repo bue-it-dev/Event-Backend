@@ -22,10 +22,6 @@ namespace Event.DTOs
 
         public int HasTransportation { get; set; }
 
-        public DateTime? EndDateTime { get; set; }
-
-        public DateTime? StartDateTime { get; set; }
-
         public string? OrganizerName { get; set; }
 
         [RegularExpression(@"^01(0|1|2|5)\d{8}$", ErrorMessage = "Please enter a valid Egyptian phone number.")]
@@ -50,7 +46,6 @@ namespace Event.DTOs
         public IFormFile? OfficeOfPresedentFile { get; set; }
 
         public IFormFile? VisitAgendaFile { get; set; }
-        public DateTime? ConfirmedAt { get; set; }
 
 
 

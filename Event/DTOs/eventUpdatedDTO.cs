@@ -1,4 +1,6 @@
-﻿namespace Event.DTOs
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace Event.DTOs
 {
     public class eventUpdatedDTO
     {
@@ -40,8 +42,12 @@
 
         public IFormFile? VisitAgendaFile { get; set; }
 
+        [FromForm]
         public List<ItcomponentEventDTO> ItcomponentEvents { get; set; } = new List<ItcomponentEventDTO>();
+        [FromForm]
         public List<TransportationDTO> Transportations { get; set; } = new List<TransportationDTO>();
+
+        [FromForm]
         public List<AccommodationDTO> Accommodations { get; set; } = new List<AccommodationDTO>();
 
 

@@ -1,6 +1,7 @@
 ﻿using Event.EventModel;
 using Event.Repository.Implementations;
 using Event.Repository.Interfaces;
+using Event.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 public class UnitOfWork : IUnitOfWork
