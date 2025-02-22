@@ -30,7 +30,7 @@ namespace Event.Services.Implementations
             _eventRepository = eventRepository;
         }
 
-        public async Task<int> AddFiles(int EventId, List<IFormFile> passportData,IFormFile OfficeOfPresedentFile,IFormFile LedOfTheUniversityOrganizerFile, IFormFile VisitAgendaFile)
+        public async Task<int> AddFiles(int EventId, List<IFormFile> passportData, IFormFile OfficeOfPresedentFile, IFormFile LedOfTheUniversityOrganizerFile, IFormFile VisitAgendaFile)
         {
             var eventData = await _eventRepository.GetAsync(e => e.EventId == EventId);
             var uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
@@ -97,7 +97,7 @@ namespace Event.Services.Implementations
             await _unitOfWork.Save();
             return EventId;
         }
-        
+
 
         public async Task<int> AddEventData(EventDTO eventData)
         {
@@ -208,7 +208,7 @@ namespace Event.Services.Implementations
                     _unitOfWork.Set<ItcomponentEvent>().RemoveRange(eventWithIncludies.ItcomponentEvents);
                     if (eventUpdatedData.HasIt == 1)
                     {
-                        foreach (var it in eventUpdatedData.ItcomponentEvents) 
+                        foreach (var it in eventUpdatedData.ItcomponentEvents)
                         {
                             _unitOfWork.Set<ItcomponentEvent>().Add(new ItcomponentEvent
                             {
@@ -253,113 +253,113 @@ namespace Event.Services.Implementations
                 }
             }
 
-           
+
 
             await _unitOfWork.Save();
             return eventUpdatedData;
         }
-        public async Task<int> UpdateFiles(int eventId, List<IFormFile> passportData, IFormFile OfficeOfPresedentFile, IFormFile LedOfTheUniversityOrganizerFile, IFormFile VisitAgendaFile)
-        {
-            var eventBeforeUpdate = await _eventRepository.GetAsync(e => e.EventId == eventId);
 
+        public async Task<int> UpdateFiles(int eventId, List<IFormFile>? passportData, IFormFile? OfficeOfPresedentFile, IFormFile? LedOfTheUniversityOrganizerFile, IFormFile? VisitAgendaFile)
+
+        { var eventBeforeUpdate = await _eventRepository.GetAsync(e => e.EventId == eventId);
             var uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
 
+            if (eventBeforeUpdate.LedOfTheUniversityOrganizerFile != null)
+            {
+                await _eventRepository.DeleteFileAsync(eventBeforeUpdate.LedOfTheUniversityOrganizerFile);
+                eventBeforeUpdate.LedOfTheUniversityOrganizerFile = null;
+            }
+            if (eventBeforeUpdate.OfficeOfPresedentFile != null)
+            {
+                await _eventRepository.DeleteFileAsync(eventBeforeUpdate.OfficeOfPresedentFile);
+                eventBeforeUpdate.OfficeOfPresedentFile = null;
+            }
             if (eventBeforeUpdate.IsStaffStudents == 1)
             {
                 eventBeforeUpdate.LedOfTheUniversityOrganizerFile = await _eventRepository.ReplaceFileAsync(
                     eventBeforeUpdate.LedOfTheUniversityOrganizerFile,
                     LedOfTheUniversityOrganizerFile,
                     uploadFolder);
-
-                if (eventBeforeUpdate.IsChairBoardPrisidentVcb == 1)
-                {
-                    eventBeforeUpdate.OfficeOfPresedentFile = await _eventRepository.ReplaceFileAsync(
-                        eventBeforeUpdate.OfficeOfPresedentFile,
-                        OfficeOfPresedentFile,
-                        uploadFolder);
-                }
             }
-            else
+
+            
+
+            if (eventBeforeUpdate.IsStaffStudents == 1 && eventBeforeUpdate.IsChairBoardPrisidentVcb == 1)
             {
-                await _eventRepository.DeleteFileAsync(eventBeforeUpdate.LedOfTheUniversityOrganizerFile);
-                eventBeforeUpdate.LedOfTheUniversityOrganizerFile = null;
-
-                await _eventRepository.DeleteFileAsync(eventBeforeUpdate.OfficeOfPresedentFile);
-                eventBeforeUpdate.OfficeOfPresedentFile = null;
+                eventBeforeUpdate.OfficeOfPresedentFile = await _eventRepository.ReplaceFileAsync(
+                    eventBeforeUpdate.OfficeOfPresedentFile,
+                    OfficeOfPresedentFile,
+                    uploadFolder);
             }
+
+            if (eventBeforeUpdate.VisitAgendaFile != null)
+            {
+                await _eventRepository.DeleteFileAsync(eventBeforeUpdate.VisitAgendaFile);
+                eventBeforeUpdate.VisitAgendaFile = null;
+            }
+           
 
             if (eventBeforeUpdate.IsOthers != 0 && eventBeforeUpdate.IsOthers != null)
             {
                 eventBeforeUpdate.VisitAgendaFile = await _eventRepository.ReplaceFileAsync(
                     eventBeforeUpdate.VisitAgendaFile,
                     VisitAgendaFile,
-                    uploadFolder
-                );
-
-                var existingPassports = _unitOfWork.Set<Passport>().Where(p => p.EventId == eventBeforeUpdate.EventId).ToList();
-
-                if (eventBeforeUpdate.IsOthers == 1) // Means international guests
-                {
-                    foreach (var passport in existingPassports)
-                    {
-                        await _eventRepository.DeleteFileAsync(passport.PassportFile);
-                    }
-                    _unitOfWork.Set<Passport>().RemoveRange(existingPassports);
-
-                    if (passportData != null && passportData.Any())
-                    {
-                        var uploadFolderPassports = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-                        if (!Directory.Exists(uploadFolderPassports))
-                        {
-                            Directory.CreateDirectory(uploadFolderPassports);
-                        }
-
-                        var newPassports = new List<Passport>();
-
-                        foreach (var file in passportData)
-                        {
-                            try
-                            {
-                                var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(file.FileName)}";
-                                var filePath = Path.Combine(uploadFolderPassports, fileName);
-
-                                using (var stream = new FileStream(filePath, FileMode.Create))
-                                {
-                                    await file.CopyToAsync(stream);
-                                }
-
-                                newPassports.Add(new Passport
-                                {
-                                    EventId = eventBeforeUpdate.EventId,
-                                    PassportFile = $"/uploads/{fileName}",
-                                    CreatedAt = DateTime.Now,
-                                });
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine($"Error saving file: {ex.Message}");
-                            }
-                        }
-
-                        if (newPassports.Any())
-                        {
-                            _unitOfWork.Set<Passport>().AddRange(newPassports);
-                        }
-                    }
-                }
-                else
-                {
-                    foreach (var passport in existingPassports)
-                    {
-                        await _eventRepository.DeleteFileAsync(passport.PassportFile);
-                    }
-                    _unitOfWork.Set<Passport>().RemoveRange(existingPassports);
-                }
-               
+                    uploadFolder);
             }
+
+            var existingPassports = _unitOfWork.Set<Passport>().Where(p => p.EventId == eventBeforeUpdate.EventId).ToList();
+
+            if (existingPassports.Count > 0)
+            {
+                foreach (var passport in existingPassports)
+                {
+                    await _eventRepository.DeleteFileAsync(passport.PassportFile);
+                }
+                _unitOfWork.Set<Passport>().RemoveRange(existingPassports);
+            }
+
+            // Add new passport files only if IsOthers == 1 (International guests)
+            if (eventBeforeUpdate.IsOthers == 1 && passportData != null && passportData.Any())
+            {
+                var newPassports = new List<Passport>();
+
+                foreach (var file in passportData)
+                {
+                    try
+                    {
+                        var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(file.FileName)}";
+                        var filePath = Path.Combine(uploadFolder, fileName);
+
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await file.CopyToAsync(stream);
+                        }
+
+                        newPassports.Add(new Passport
+                        {
+                            EventId = eventBeforeUpdate.EventId,
+                            PassportFile = $"/uploads/{fileName}",
+                            CreatedAt = DateTime.Now,
+                            UpdateAt = DateTime.Now,
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error saving file: {ex.Message}");
+                    }
+                }
+
+                if (newPassports.Any())
+                {
+                    _unitOfWork.Set<Passport>().AddRange(newPassports);
+                }
+            }
+
             await _unitOfWork.Save();
-            return eventId;
+            return eventBeforeUpdate.EventId;
         }
+
+    
 
 
         public async Task<List<ApprovalSchema>> GetApprovalSchemaDepartments()
@@ -376,10 +376,8 @@ namespace Event.Services.Implementations
 
         public async Task<IEnumerable<GetEventDTO>> GetEventByEmpId(int empId)
         {
-            // Get data from repository
             var events = await _eventRepository.GetEventsByEmpId(empId);
 
-            // Map to GetEventDTO and set StatusName
             var eventDTOs = events.Select(e => new GetEventDTO
             {
                 EventId = e.EventId,
@@ -389,7 +387,6 @@ namespace Event.Services.Implementations
                 CreatedAt = e.CreatedAt,
                 UpdateAt = e.UpdateAt,
                 EmpId = e.EmpId,
-                // Get the latest approval status
                 StatusName = e.EventApprovals
                     .OrderByDescending(approval => approval.ApprovalId)
                     .FirstOrDefault()?.Status switch
@@ -411,7 +408,11 @@ namespace Event.Services.Implementations
             var eventapproval = _eventRepository.updateEventApprovals(eventApprovalUpdatesDto, userName, userId);
         }
 
-
+        public async Task<IEnumerable<GetEventDTO>> GetEventRequestVCB(string usaerName)
+        {
+            var result = await _eventRepository.GetEventRequestVCB(usaerName);
+            return result;
+        }
     }
 }
 

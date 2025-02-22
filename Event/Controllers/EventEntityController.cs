@@ -81,11 +81,11 @@ namespace Event.Controllers
             var result = await _eventService.UpdateEvent(eventId, eventUpdatedData);
             return Ok(new GeneralResponse<eventUpdatedDTO>(true, "Event updated successfully", result));
         }
-        [HttpPut("update-files/{eventId}")]
-        public async Task<IActionResult> Updatefiles([FromForm] int EventId, List<IFormFile> passportData, IFormFile OfficeOfPresedentFile, IFormFile LedOfTheUniversityOrganizerFile, IFormFile VisitAgendaFile)
+        [HttpPut("update-files/{EventId}")]
+        public async Task<IActionResult> Updatefiles(int EventId, List<IFormFile>? passportData, IFormFile? OfficeOfPresedentFile, IFormFile? LedOfTheUniversityOrganizerFile, IFormFile? VisitAgendaFile)
         {
             var result = await _eventService.UpdateFiles(EventId, passportData, OfficeOfPresedentFile, LedOfTheUniversityOrganizerFile, VisitAgendaFile);
-            return Ok(new GeneralResponse<int>(true, "Event updated successfully", result));
+            return Ok(new GeneralResponse<int>(true, "Files updated successfully", result));
         }
 
         [HttpDelete("delete/{eventId}")]
@@ -250,5 +250,20 @@ namespace Event.Controllers
           
         }
 
+        [HttpGet("get-eventRequestVCB")]
+        public async Task<IActionResult> GetEventRequestVCB()
+        {
+            var userName = User.FindFirstValue(ClaimTypes.Name);
+            var result = await _eventService.GetEventRequestVCB(userName);
+
+            if (result == null || !result.Any())
+            {
+                return NotFound(new GeneralResponse<List<GetEventDTO>>( success: false, message: "No business requests found",data: null));
+            }
+
+            return Ok(new GeneralResponse<IEnumerable<GetEventDTO>>(success: true,message: "Event requests retrieved successfully", data: result));
+        }
+
     }
 }
+    
