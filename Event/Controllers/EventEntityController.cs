@@ -264,6 +264,29 @@ namespace Event.Controllers
             return Ok(new GeneralResponse<IEnumerable<GetEventDTO>>(success: true,message: "Event requests retrieved successfully", data: result));
         }
 
+        [HttpPut("update-budget-office-data/{eventId}")]
+        public async Task<IActionResult> UpdateBudgetOfficeData(int eventId, updatedBudgetOfficeDTO updatedBudgetOfficeDto)
+        {
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            bool updateSucceeded = await _eventService.updateBudgetOffice((int)eventId, updatedBudgetOfficeDto, userId);
+
+            if (updateSucceeded)
+            {
+                return Ok(" budgetOffice details updated successfully");
+            }
+            else
+            {
+                return BadRequest("An error occurred while updating the Budget Office details");
+            }
+
+        }
+
     }
 }
     

@@ -81,7 +81,7 @@ namespace Event.Repository.Implementations
                 approvalList.Add(new EventApproval
                 {
                     EventId = eventData.EventId,
-                    EmpId = 6841,
+                    EmpId = 6841, ///president for Approval
                     UserTypeId = 3,
                     IsApprove = 1,
                     CreatedAt = DateTime.Now
@@ -90,7 +90,7 @@ namespace Event.Repository.Implementations
                 approvalList.Add(new EventApproval
                 {
                     EventId = eventData.EventId,
-                    EmpId = 3960,
+                    EmpId = 3960,  //Security Check
                     UserTypeId = 4,
                     IsApprove = 1,
                     CreatedAt = DateTime.Now
@@ -102,10 +102,21 @@ namespace Event.Repository.Implementations
                 approvalList.Add(new EventApproval
                 {
                     EventId = eventData.EventId,
-                    EmpId = 6841,
+                    EmpId = 6841,  //President for Acknowledgement
                     UserTypeId = 3,
                     IsApprove = 0,
                     CreatedAt = DateTime.Now
+                });
+            }
+            if(eventData.IsChairBoardPrisidentVcb == 1)
+            {
+                approvalList.Add(new EventApproval
+                {
+                    EventId = eventData.EventId,
+                    EmpId = 7161, // public Affairs for Acknowledgement
+                    UserTypeId = 5,
+                    IsApprove = 0,
+                    CreatedAt = DateTime.UtcNow
                 });
             }
 
@@ -114,7 +125,7 @@ namespace Event.Repository.Implementations
                 approvalList.Add(new EventApproval
                 {
                     EventId = eventData.EventId,
-                    EmpId = 7011,
+                    EmpId = 7011, //IT for Approve
                     UserTypeId = 6,
                     IsApprove = 1,
                     CreatedAt = DateTime.UtcNow
@@ -125,7 +136,7 @@ namespace Event.Repository.Implementations
                 approvalList.Add(new EventApproval
                 {
                     EventId = eventData.EventId,
-                    EmpId = 7011,
+                    EmpId = 7011,  //IT for Acknowledgement
                     UserTypeId = 6,
                     IsApprove = 0,
                     CreatedAt = DateTime.UtcNow
@@ -136,10 +147,10 @@ namespace Event.Repository.Implementations
 
             var additionalApprovals = new List<EventApproval>
             {
-                new EventApproval { EventId = eventData.EventId, EmpId = 7988, UserTypeId = 9, IsApprove = 1, CreatedAt = DateTime.UtcNow },
-                new EventApproval { EventId = eventData.EventId, EmpId = 1118, UserTypeId = 14, IsApprove = 1, CreatedAt = DateTime.UtcNow },
-                new EventApproval { EventId = eventData.EventId, EmpId = 7068, UserTypeId = 15, IsApprove = 1, CreatedAt = DateTime.UtcNow },
-                new EventApproval { EventId = eventData.EventId, EmpId = 6792, UserTypeId = 16, IsApprove = 1, CreatedAt = DateTime.UtcNow }
+                new EventApproval { EventId = eventData.EventId, EmpId = 7988, UserTypeId = 9, IsApprove = 1, CreatedAt = DateTime.UtcNow }, //Budget
+                new EventApproval { EventId = eventData.EventId, EmpId = 1118, UserTypeId = 14, IsApprove = 1, CreatedAt = DateTime.UtcNow }, //BO
+                new EventApproval { EventId = eventData.EventId, EmpId = 7068, UserTypeId = 15, IsApprove = 1, CreatedAt = DateTime.UtcNow }, //EAF
+                new EventApproval { EventId = eventData.EventId, EmpId = 6792, UserTypeId = 16, IsApprove = 1, CreatedAt = DateTime.UtcNow }  //COO
             };
 
             approvalList.AddRange(additionalApprovals);
@@ -159,6 +170,26 @@ namespace Event.Repository.Implementations
                 _dbContext.EventEntities.Update(existingRequest);
                 await _unitOfWork.Save();
             }
+            var approvals = await _dbContext.EventApprovals.Where(e => e.EventId == eventData.EventId).FirstOrDefaultAsync();
+            var userDetails = await _context.BueUsers.Where(e => e.EmpId == approvals.EmpId).FirstOrDefaultAsync();
+            var SuperiorEmail = await _dbContext.Users.Where(e => e.UserName.ToLower().Trim() == userDetails.UserName.ToLower().Trim()).FirstOrDefaultAsync();
+            MailRequest request = new MailRequest();
+            request.ToEmail = SuperiorEmail.Email;
+            request.Subject = "no-reply: New  Event Request for Your Action";
+            var mailBody = @"<!DOCTYPE html>
+                                                 <html>
+                                                    <body>
+                                                        <p><strong>Dear Mr./ Ms. <b>" + SuperiorEmail.UserName + @"</b>,
+                                                            <br/><br/> We would like to inform you that a new Event request has been added to the EventSystem and requires your attention. 
+                                                            <br/><br/> Please review the details at your earliest convenience. <br/><br/>
+                                                            <br/><br/> To Access the EventSystem please <a href="""">Click Here</a>
+                                                            <br/><br/> Thank you for your prompt attention to this matter.
+                                                            <br/><br/> <span style=""color:#7f0008;"">Note: This is a no-reply email. please do not reply to this email.</span>
+                                                            <br/><br/> Thanks, and Best Regards,
+                                                    </body>
+                                                </html>";
+            request.Body = mailBody;
+            await _mailService.SendEmailAsync(request);
         }
 
 

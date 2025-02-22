@@ -59,21 +59,18 @@ namespace Event.Services.Implementations
 
                         var passports = new List<Passport>();
 
-                        foreach (var file in passportData) // ✅ Correct: Loop through uploaded files
+                        foreach (var file in passportData) 
                         {
                             try
                             {
-                                // Generate a unique file name
                                 var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(file.FileName)}";
                                 var filePath = Path.Combine(uploadFolderPassports, fileName);
 
-                                // Save file to server
                                 using (var stream = new FileStream(filePath, FileMode.Create))
                                 {
                                     await file.CopyToAsync(stream);
                                 }
 
-                                // Store only the file path in DB
                                 passports.Add(new Passport
                                 {
                                     EventId = eventData.EventId,
@@ -412,6 +409,28 @@ namespace Event.Services.Implementations
         {
             var result = await _eventRepository.GetEventRequestVCB(usaerName);
             return result;
+        }
+
+        public async Task<bool> updateBudgetOffice(int eventId, updatedBudgetOfficeDTO updatedBudgetOfficeDto, int userId)
+        {
+            try
+            {
+
+                var eventRequest = await _eventRepository.GetAsync(e => e.EventId == eventId);
+                if (eventRequest != null)
+                {
+                    eventRequest.BudgetCode = updatedBudgetOfficeDto.BudgetCode;
+                    eventRequest.BudgetCostCenter = updatedBudgetOfficeDto.BudgetCostCenter;
+                     _eventRepository.UpdateAsync(eventRequest);
+                }
+                _unitOfWork.Save();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
         }
     }
 }

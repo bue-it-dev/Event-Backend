@@ -18,6 +18,7 @@ namespace Event.Services.Interfaces
         Task<IEnumerable<GetEventDTO>> GetEventByEmpId(int empId);
         Task updateEventApprovals(eventApprovalUpdatesDto eventApprovalUpdatesDto, string userName, int userId);
         Task<IEnumerable<GetEventDTO>> GetEventRequestVCB(string usaerName);
+        Task<bool> updateBudgetOffice(int eventId, updatedBudgetOfficeDTO updatedBudgetOfficeDto, int userId);
 
     }
 }
