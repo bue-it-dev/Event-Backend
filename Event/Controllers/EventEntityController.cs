@@ -6,13 +6,15 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Event.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-  
+    //[Authorize(AuthenticationSchemes =
+    //JwtBearerDefaults.AuthenticationScheme)]
     public class EventEntityController : ControllerBase
     {
         private readonly IEventService _eventService;
@@ -38,10 +40,18 @@ namespace Event.Controllers
     }
 
         [HttpPost("add-event")]
-        public async Task<IActionResult> AddEvent([FromForm] EventDTO eventData, [FromForm] List<IFormFile> passportData)
+        public async Task<IActionResult> AddEvent([FromBody] EventDTO eventData)
         {
-            var result = await _eventService.AddEventData(eventData, passportData);
-            return Ok(new GeneralResponse<EventDTO>(true, "Event added successfully", result));
+            var result = await _eventService.AddEventData(eventData);
+            return Ok(new GeneralResponse<int>(true, "Event added successfully", result));
+        }
+
+        [HttpPost("add-files")]
+        public async Task<IActionResult> AddFiles([FromForm] int EventId, List<IFormFile> passportData, IFormFile OfficeOfPresedentFile, IFormFile LedOfTheUniversityOrganizerFile, IFormFile VisitAgendaFile)
+        {
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var result = await _eventService.AddFiles(EventId, passportData, OfficeOfPresedentFile, LedOfTheUniversityOrganizerFile, VisitAgendaFile);
+            return Ok(new GeneralResponse<int>(true, "Files added successfully", result));
         }
 
         [HttpPost("submit/{eventId}")]
@@ -66,10 +76,16 @@ namespace Event.Controllers
         }
 
         [HttpPut("update/{eventId}")]
-        public async Task<IActionResult> UpdateEvent(int eventId, [FromForm] eventUpdatedDTO eventUpdatedData, [FromForm] List<IFormFile> passportData)
+        public async Task<IActionResult> UpdateEvent(int eventId, [FromBody] eventUpdatedDTO eventUpdatedData)
         {
-            var result = await _eventService.UpdateEvent(eventId, eventUpdatedData,passportData);
+            var result = await _eventService.UpdateEvent(eventId, eventUpdatedData);
             return Ok(new GeneralResponse<eventUpdatedDTO>(true, "Event updated successfully", result));
+        }
+        [HttpPut("update-files/{eventId}")]
+        public async Task<IActionResult> Updatefiles([FromForm] int EventId, List<IFormFile> passportData, IFormFile OfficeOfPresedentFile, IFormFile LedOfTheUniversityOrganizerFile, IFormFile VisitAgendaFile)
+        {
+            var result = await _eventService.UpdateFiles(EventId, passportData, OfficeOfPresedentFile, LedOfTheUniversityOrganizerFile, VisitAgendaFile);
+            return Ok(new GeneralResponse<int>(true, "Event updated successfully", result));
         }
 
         [HttpDelete("delete/{eventId}")]
@@ -181,11 +197,11 @@ namespace Event.Controllers
         }
 
         [HttpGet("get-venuse")]
-        public async Task<IActionResult> GetVenuse()
+        public async Task<IActionResult> GetVenuse(int buildinId)
         {
             try
             {
-                var result = (await _VenueLookup.GetListAsync(x => true)).ToList();
+                var result = (await _VenueLookup.GetListAsync(x => x.BuildingId == buildinId)).ToList();
 
                 if (!result.Any())
                 {
@@ -198,6 +214,40 @@ namespace Event.Controllers
             {
                 return StatusCode(500, new GeneralResponse<string>(false, "An error occurred", ex.Message));
             }
+        }
+
+        [HttpGet("get-events-by-empId/{empId}")]
+        public async Task<IActionResult> GetEventsByEmpId(int empId)
+        {
+            try
+            {
+                var result = await _eventService.GetEventByEmpId(empId);
+                if (empId == null || result == null)
+                {
+                    return NotFound(new { message = "No " });
+                }
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPut("update-eventApproval")]
+        public async Task<IActionResult> updateBussinessApproval([FromBody] eventApprovalUpdatesDto eventApprovalUpdatesDto)
+        {
+            var userName = User.FindFirstValue(ClaimTypes.Name);
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            await _eventService.updateEventApprovals(eventApprovalUpdatesDto, userName, userId);
+            return Ok();
+          
         }
 
     }

@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace Event.DTOs
+﻿namespace Event.DTOs
 {
-    public class eventUpdatedDTO
+    public class GetEventDTO
     {
+        public int EventId { get; set; }
+
         public int? ApprovingDepTypeId { get; set; }
 
         public string EventTitle { get; set; } = null!;
@@ -20,6 +20,16 @@ namespace Event.DTOs
 
         public int HasTransportation { get; set; }
 
+        public string? BudgetlineName { get; set; }
+
+        public string? BudgetCode { get; set; }
+
+        public string? BudgetCostCenter { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+
+        public DateTime? UpdateAt { get; set; }
+
         public string? OrganizerName { get; set; }
 
         public int? OrganizerMobile { get; set; }
@@ -30,19 +40,14 @@ namespace Event.DTOs
 
         public int? DeptId { get; set; }
 
-        public int? IsOthers { get; set; }
-
-        public int? IsStaffStudents { get; set; }
-
-        public int? IsChairBoardPrisidentVcb { get; set; }
+        public DateTime? DecisionAt { get; set; }
 
 
-        public List<ItcomponentEventDTO> ItcomponentEvents { get; set; } = new List<ItcomponentEventDTO>();
-        public List<TransportationDTO> Transportations { get; set; } = new List<TransportationDTO>();
 
-        public List<AccommodationDTO> Accommodations { get; set; } = new List<AccommodationDTO>();
+        public int? EmpId { get; set; }
 
-        public List<BuildingVenuesDTO> BuildingVenues { get; set; } = new();
-
+        public DateTime? ConfirmedAt { get; set; }
+        public int Status { get; set; }
+        public string StatusName { get; set; }
     }
 }

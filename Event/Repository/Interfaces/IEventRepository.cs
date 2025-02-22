@@ -14,8 +14,9 @@ namespace Event.Repository.Interfaces
         Task DeleteFileAsync(string filePath);
         Task<List<ApprovalSchema>> GetApprovalDepartmentSchema();
         Task<List<ItcomponentEvent>> GetItComponents();
-
-
+        Task<IEnumerable<EventEntity>> GetEventsByEmpId(int empId);
+        Task SendEventAprovalEmail(int empId, int eventId, int status);
+        Task<bool> updateEventApprovals(eventApprovalUpdatesDto eventApprovalUpdatesDto, string userName, int userId);
     }
 }
     

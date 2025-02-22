@@ -65,6 +65,8 @@ public partial class EventEntity
 
     public virtual ICollection<BuildingVenue> BuildingVenues { get; set; } = new List<BuildingVenue>();
 
+    public virtual ICollection<EventApproval> EventApprovals { get; set; } = new List<EventApproval>();
+
     public virtual ICollection<ItcomponentEvent> ItcomponentEvents { get; set; } = new List<ItcomponentEvent>();
 
     public virtual ICollection<Passport> Passports { get; set; } = new List<Passport>();

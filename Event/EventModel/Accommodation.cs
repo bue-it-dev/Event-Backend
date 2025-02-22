@@ -15,7 +15,7 @@ public partial class Accommodation
 
     public DateTime? EndDate { get; set; }
 
-    public string? NumOfRooms { get; set; }
+    public int? NumOfRooms { get; set; }
 
     public virtual EventEntity? Event { get; set; }
 }

@@ -41,6 +41,8 @@ public partial class EventContext : DbContext
 
     public virtual DbSet<RoomLookup> RoomLookups { get; set; }
 
+    public virtual DbSet<Test> Tests { get; set; }
+
     public virtual DbSet<Transportation> Transportations { get; set; }
 
     public virtual DbSet<TransportationType> TransportationTypes { get; set; }
@@ -70,10 +72,7 @@ public partial class EventContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("endDate");
             entity.Property(e => e.EventId).HasColumnName("eventId");
-            entity.Property(e => e.NumOfRooms)
-                .HasMaxLength(10)
-                .IsFixedLength()
-                .HasColumnName("numOfRooms");
+            entity.Property(e => e.NumOfRooms).HasColumnName("numOfRooms");
             entity.Property(e => e.RoomTypeId).HasColumnName("roomTypeId");
             entity.Property(e => e.StartDate)
                 .HasColumnType("datetime")
@@ -152,6 +151,10 @@ public partial class EventContext : DbContext
             entity.Property(e => e.IsApprove).HasColumnName("isApprove");
             entity.Property(e => e.Status).HasColumnName("status");
             entity.Property(e => e.UserTypeId).HasColumnName("userTypeId");
+
+            entity.HasOne(d => d.Event).WithMany(p => p.EventApprovals)
+                .HasForeignKey(d => d.EventId)
+                .HasConstraintName("FK_EventApprovals_EventEntity");
         });
 
         modelBuilder.Entity<EventApprovalLevelLookup>(entity =>
@@ -265,6 +268,9 @@ public partial class EventContext : DbContext
                 .HasColumnName("created_at");
             entity.Property(e => e.EventId).HasColumnName("eventId");
             entity.Property(e => e.PassportFile).HasColumnName("passportFile");
+            entity.Property(e => e.UpdateAt)
+                .HasColumnType("datetime")
+                .HasColumnName("update_at");
 
             entity.HasOne(d => d.Event).WithMany(p => p.Passports)
                 .HasForeignKey(d => d.EventId)
@@ -283,6 +289,18 @@ public partial class EventContext : DbContext
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("roomTypeName");
+        });
+
+        modelBuilder.Entity<Test>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToTable("test");
+
+            entity.Property(e => e.Id)
+                .HasMaxLength(10)
+                .IsFixedLength()
+                .HasColumnName("id");
         });
 
         modelBuilder.Entity<Transportation>(entity =>

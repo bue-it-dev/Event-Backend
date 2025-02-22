@@ -15,7 +15,11 @@ namespace Event.Mapping
                 .ReverseMap();
             CreateMap<EventGetDTO, EventEntity>().ReverseMap();
             CreateMap<ItcomponentEvent, ItcomponentEventDTO>().ReverseMap();
-            CreateMap<eventUpdatedDTO, EventEntity>().ReverseMap();
+            CreateMap<eventUpdatedDTO, EventEntity>().ForMember(dest => dest.ItcomponentEvents, opt => opt.Ignore())
+                .ForMember(dest => dest.Transportations, opt => opt.Ignore())
+                .ForMember(dest => dest.Accommodations, opt => opt.Ignore()).ForMember(dest => dest.BuildingVenues, opt => opt.Ignore())
+                .ReverseMap();
+
         }
     }
 }

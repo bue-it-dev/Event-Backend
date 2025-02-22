@@ -29,34 +29,15 @@ namespace Event.DTOs
 
         [RegularExpression(@"^[1-9]{4}$", ErrorMessage = "Extension must be exactly 4 digits, using only numbers 1-9.")]
         public string OrganizerExtention { get; set; }
-
-
-        public string? ApprovingDeptName { get; set; }
-
-        public int? DeptId { get; set; }
-
         public int? IsOthers { get; set; }
 
         public int? IsStaffStudents { get; set; }
 
         public int? IsChairBoardPrisidentVcb { get; set; }
 
-        public IFormFile? LedOfTheUniversityOrganizerFile { get; set; }
-
-        public IFormFile? OfficeOfPresedentFile { get; set; }
-
-        public IFormFile? VisitAgendaFile { get; set; }
-
-
-
-            public List<ItcomponentEventDTO> ItcomponentEvents { get; set; } = new List<ItcomponentEventDTO>();
-            public List<TransportationDTO> Transportations { get; set; } = new List<TransportationDTO>();
-            public List<AccommodationDTO> Accommodations { get; set; } = new List<AccommodationDTO>();
-            public List<BuildingVenuesDTO> BuildingVenues { get; set; } = new List<BuildingVenuesDTO>();
-        
-
-
-
-
+        public List<ItcomponentEventDTO> ItcomponentEvents { get; set; } = new();
+        public List<TransportationDTO> Transportations { get; set; } = new();
+        public List<AccommodationDTO> Accommodations { get; set; } = new();
+        public List<BuildingVenuesDTO> BuildingVenues { get; set; } = new();
     }
 }

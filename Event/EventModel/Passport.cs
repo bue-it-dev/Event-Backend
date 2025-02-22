@@ -13,5 +13,7 @@ public partial class Passport
 
     public DateTime? CreatedAt { get; set; }
 
+    public DateTime? UpdateAt { get; set; }
+
     public virtual EventEntity? Event { get; set; }
 }

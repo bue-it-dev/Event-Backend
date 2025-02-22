@@ -18,4 +18,6 @@ public partial class EventApproval
     public DateTime? CreatedAt { get; set; }
 
     public int? IsApprove { get; set; }
+
+    public virtual EventEntity? Event { get; set; }
 }
