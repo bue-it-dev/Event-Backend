@@ -40,6 +40,8 @@ public partial class EventEntity
     public int? OrganizerExtention { get; set; }
 
     public string? ApprovingDeptName { get; set; }
+    public string? OrganizerEmail { get; set; }
+
 
     public int? DeptId { get; set; }
 

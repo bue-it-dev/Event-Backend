@@ -190,6 +190,29 @@ namespace Event.Repository.Implementations
                                                 </html>";
             request.Body = mailBody;
             await _mailService.SendEmailAsync(request);
+
+            if (eventData.IsChairBoardPrisidentVcb == 1)
+            {
+                var userDetail = await _context.BueUsers.Where(e => e.EmpId == 7011).FirstOrDefaultAsync(); // for public Affairs
+                var Email = await _dbContext.Users.Where(e => e.UserName.ToLower().Trim() == userDetails.UserName.ToLower().Trim()).FirstOrDefaultAsync();
+                MailRequest Request = new MailRequest();
+                request.ToEmail = SuperiorEmail.Email;
+                request.Subject = "no-reply: New  Event Request for Your Action";
+                var mail = @"<!DOCTYPE html>
+                                                 <html>
+                                                    <body>
+                                                        <p><strong>Dear Mr./ Ms. <b>" + SuperiorEmail.UserName + @"</b>,
+                                                            <br/><br/> We would like to inform you that a new Event request has been added to the EventSystem and requires your attention. 
+                                                            <br/><br/> Please review the details at your earliest convenience. <br/><br/>
+                                                            <br/><br/> To Access the EventSystem please <a href="""">Click Here</a>
+                                                            <br/><br/> Thank you for your prompt attention to this matter.
+                                                            <br/><br/> <span style=""color:#7f0008;"">Note: This is a no-reply email. please do not reply to this email.</span>
+                                                            <br/><br/> Thanks, and Best Regards,
+                                                    </body>
+                                                </html>";
+                request.Body = mail;
+                await _mailService.SendEmailAsync(Request);
+            }
         }
 
 
@@ -491,6 +514,9 @@ namespace Event.Repository.Implementations
                                     EventEndDate = req.EventEndDate,
                                     CreatedAt = req.CreatedAt,
                                     UpdateAt = req.UpdateAt,
+                                    OrganizerExtention = req.OrganizerExtention,
+                                    OrganizerMobile = req.OrganizerMobile,
+                                    OrganizerName = req.OrganizerName,
                                     Status = app.Status ?? 0,
                                     StatusName = (app.Status ?? 0) == 1
                                                  ? "Approved"
@@ -507,6 +533,45 @@ namespace Event.Repository.Implementations
             }
 
         }
+        public async Task<IEnumerable<GetEventDTO>> GetEventRequestHOD(string usaerName)
+        {
+            try
+            {
+                var eventData = from req in _dbContext.EventEntities
+                                join app in _dbContext.EventApprovals
+                                on req.EventId equals app.EventId
+                                where app.UserTypeId == 1 &&
+                                      _dbContext.EventApprovals
+                                                .Any(a => a.EventId == req.EventId)
+                                orderby (req.UpdateAt ?? req.ConfirmedAt ?? req.CreatedAt) descending
+                                select new GetEventDTO
+                                {
+                                    EventId = req.EventId,
+                                    EmpId = req.EmpId,
+                                    EventTitle = req.EventTitle,
+                                    ApprovingDeptName = req.ApprovingDeptName,
+                                    EventStartDate = req.EventStartDate,
+                                    EventEndDate = req.EventEndDate,
+                                    CreatedAt = req.CreatedAt,
+                                    UpdateAt = req.UpdateAt,
+                                    OrganizerExtention = req.OrganizerExtention,
+                                    OrganizerMobile = req.OrganizerMobile,
+                                    OrganizerName = req.OrganizerName,
+                                    Status = app.Status ?? 0,
+                                    StatusName = (app.Status ?? 0) == 1
+                                                 ? "Approved"
+                                                 : (app.Status ?? 0) == 0
+                                                   ? "Rejected"
+                                                   : "Pending"
+                                };
 
-    }
+                return await eventData.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        }
 }

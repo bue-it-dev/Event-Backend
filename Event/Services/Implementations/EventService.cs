@@ -410,6 +410,11 @@ namespace Event.Services.Implementations
             var result = await _eventRepository.GetEventRequestVCB(usaerName);
             return result;
         }
+        public async Task<IEnumerable<GetEventDTO>> GetEventRequestHOD(string usaerName)
+        {
+            var result = await _eventRepository.GetEventRequestHOD(usaerName);
+            return result;
+        }
 
         public async Task<bool> updateBudgetOffice(int eventId, updatedBudgetOfficeDTO updatedBudgetOfficeDto, int userId)
         {

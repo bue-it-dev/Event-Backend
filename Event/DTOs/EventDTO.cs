@@ -21,6 +21,7 @@ namespace Event.DTOs
         public int HasAccomdation { get; set; }
 
         public int HasTransportation { get; set; }
+        public string? OrganizerEmail { get; set; }
 
         public string? OrganizerName { get; set; }
 
