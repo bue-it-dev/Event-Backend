@@ -40,8 +40,6 @@ public partial class EventEntity
     public int? OrganizerExtention { get; set; }
 
     public string? ApprovingDeptName { get; set; }
-    public string? OrganizerEmail { get; set; }
-
 
     public int? DeptId { get; set; }
 
@@ -62,6 +60,8 @@ public partial class EventEntity
     public int? EmpId { get; set; }
 
     public DateTime? ConfirmedAt { get; set; }
+
+    public string? OrganizerEmail { get; set; }
 
     public virtual ICollection<Accommodation> Accommodations { get; set; } = new List<Accommodation>();
 

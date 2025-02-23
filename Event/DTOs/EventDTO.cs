@@ -21,7 +21,6 @@ namespace Event.DTOs
         public int HasAccomdation { get; set; }
 
         public int HasTransportation { get; set; }
-        public string? OrganizerEmail { get; set; }
 
         public string? OrganizerName { get; set; }
 
@@ -35,6 +34,7 @@ namespace Event.DTOs
         public int? IsStaffStudents { get; set; }
 
         public int? IsChairBoardPrisidentVcb { get; set; }
+        public string? OrganizerEmail { get; set; }
 
         public List<ItcomponentEventDTO> ItcomponentEvents { get; set; } = new();
         public List<TransportationDTO> Transportations { get; set; } = new();

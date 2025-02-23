@@ -337,7 +337,6 @@ namespace Event.Services.Implementations
                             EventId = eventBeforeUpdate.EventId,
                             PassportFile = $"/uploads/{fileName}",
                             CreatedAt = DateTime.Now,
-                            UpdateAt = DateTime.Now,
                         });
                     }
                     catch (Exception ex)

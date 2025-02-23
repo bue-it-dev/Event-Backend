@@ -41,6 +41,7 @@
         public int? DeptId { get; set; }
 
         public DateTime? DecisionAt { get; set; }
+        public string? OrganizerEmail { get; set; }
 
 
 

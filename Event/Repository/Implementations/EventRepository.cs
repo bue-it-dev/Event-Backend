@@ -517,6 +517,7 @@ namespace Event.Repository.Implementations
                                     OrganizerExtention = req.OrganizerExtention,
                                     OrganizerMobile = req.OrganizerMobile,
                                     OrganizerName = req.OrganizerName,
+                                    OrganizerEmail = req.OrganizerEmail,
                                     Status = app.Status ?? 0,
                                     StatusName = (app.Status ?? 0) == 1
                                                  ? "Approved"
@@ -557,6 +558,7 @@ namespace Event.Repository.Implementations
                                     OrganizerExtention = req.OrganizerExtention,
                                     OrganizerMobile = req.OrganizerMobile,
                                     OrganizerName = req.OrganizerName,
+                                    OrganizerEmail = req.OrganizerEmail,
                                     Status = app.Status ?? 0,
                                     StatusName = (app.Status ?? 0) == 1
                                                  ? "Approved"
