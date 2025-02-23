@@ -33,6 +33,7 @@ namespace Event.Repository.Implementations
         public async Task<AuthToken> GenerateAsync(string username)
         {
             var employee = await _oldHrmRepository.GetEmployeebyUsername(username);
+
             var traveluser = await _eventContext.Users.Where(e => e.UserName == username).FirstOrDefaultAsync();
             if (traveluser != null)
             {

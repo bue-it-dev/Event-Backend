@@ -57,7 +57,7 @@ public partial class EventContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=E-SARA-ELSHRIFE\\MSSQLSERVER01;Database=Event;Trusted_Connection=True;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("Server=.;Database=Event;User ID=sa;Password=sql_bue2019;Trusted_Connection=false;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -98,7 +98,7 @@ public partial class EventContext : DbContext
 
         modelBuilder.Entity<BuildingLookup>(entity =>
         {
-            entity.HasKey(e => e.BuildingId).HasName("PK__Building__979FD1CDCD815922");
+            entity.HasKey(e => e.BuildingId).HasName("PK__Building__979FD1CD6558F884");
 
             entity.ToTable("BuildingLookup");
 
@@ -111,7 +111,7 @@ public partial class EventContext : DbContext
 
         modelBuilder.Entity<BuildingVenue>(entity =>
         {
-            entity.HasKey(e => e.VenueBuildingId).HasName("PK__Building__B0A1D97F646DF051");
+            entity.HasKey(e => e.VenueBuildingId).HasName("PK__Building__B0A1D97F147A9007");
 
             entity.ToTable("BuildingVenue");
 
@@ -125,7 +125,7 @@ public partial class EventContext : DbContext
 
             entity.HasOne(d => d.Venue).WithMany(p => p.BuildingVenues)
                 .HasForeignKey(d => d.VenueId)
-                .HasConstraintName("FK__BuildingV__venue__5AEE82B9");
+                .HasConstraintName("FK__BuildingV__venue__49C3F6B7");
         });
 
         modelBuilder.Entity<DepartmentTypeLookup>(entity =>
@@ -218,7 +218,7 @@ public partial class EventContext : DbContext
 
         modelBuilder.Entity<ItcomponentEvent>(entity =>
         {
-            entity.HasKey(e => e.ItcomponentEventId).HasName("PK__ITCompon__0760172737F25CC7");
+            entity.HasKey(e => e.ItcomponentEventId).HasName("PK__ITCompon__076017277E1BAF2E");
 
             entity.ToTable("ITComponentEvent");
 
@@ -234,7 +234,7 @@ public partial class EventContext : DbContext
 
         modelBuilder.Entity<ItcomponentLookup>(entity =>
         {
-            entity.HasKey(e => e.ItcomponentId).HasName("PK__ITCompon__2E8098FCD990C7BA");
+            entity.HasKey(e => e.ItcomponentId).HasName("PK__ITCompon__2E8098FCA8760813");
 
             entity.ToTable("ITComponentLookup");
 
@@ -247,7 +247,7 @@ public partial class EventContext : DbContext
 
         modelBuilder.Entity<NatureOfEventLookup>(entity =>
         {
-            entity.HasKey(e => e.NatureOfEventId).HasName("PK__NatureOf__0D27B156BDB43A23");
+            entity.HasKey(e => e.NatureOfEventId).HasName("PK__NatureOf__0D27B156A86DED72");
 
             entity.ToTable("NatureOfEventLookup");
 
@@ -280,7 +280,7 @@ public partial class EventContext : DbContext
 
         modelBuilder.Entity<RoomLookup>(entity =>
         {
-            entity.HasKey(e => e.RoomTypeId).HasName("PK__roomLook__5E5E0CF3045C69D6");
+            entity.HasKey(e => e.RoomTypeId).HasName("PK__roomLook__5E5E0CF3347E071F");
 
             entity.ToTable("roomLookup");
 
@@ -305,7 +305,7 @@ public partial class EventContext : DbContext
 
         modelBuilder.Entity<Transportation>(entity =>
         {
-            entity.HasKey(e => e.TransportationId).HasName("PK__Transpor__B8DDDFADDBE5FCA7");
+            entity.HasKey(e => e.TransportationId).HasName("PK__Transpor__B8DDDFADED0CE05A");
 
             entity.ToTable("Transportation");
 
@@ -326,12 +326,12 @@ public partial class EventContext : DbContext
 
             entity.HasOne(d => d.TransportationType).WithMany(p => p.Transportations)
                 .HasForeignKey(d => d.TransportationTypeId)
-                .HasConstraintName("FK__Transport__trans__60A75C0F");
+                .HasConstraintName("FK__Transport__trans__5070F446");
         });
 
         modelBuilder.Entity<TransportationType>(entity =>
         {
-            entity.HasKey(e => e.TransportationTypeId).HasName("PK__Transpor__FA9B322B3D73C5B7");
+            entity.HasKey(e => e.TransportationTypeId).HasName("PK__Transpor__FA9B322BBE8CD8D2");
 
             entity.ToTable("TransportationType");
 
@@ -383,7 +383,7 @@ public partial class EventContext : DbContext
 
         modelBuilder.Entity<VenueLookup>(entity =>
         {
-            entity.HasKey(e => e.VenueId).HasName("PK__venueLoo__4DDFB6FF97A86DD7");
+            entity.HasKey(e => e.VenueId).HasName("PK__venueLoo__4DDFB6FF4096EB62");
 
             entity.ToTable("venueLookup");
 
@@ -394,16 +394,16 @@ public partial class EventContext : DbContext
 
             entity.HasOne(d => d.Building).WithMany(p => p.VenueLookups)
                 .HasForeignKey(d => d.BuildingId)
-                .HasConstraintName("FK__venueLook__build__619B8048");
+                .HasConstraintName("FK__venueLook__build__52593CB8");
 
             entity.HasOne(d => d.VenueType).WithMany(p => p.VenueLookups)
                 .HasForeignKey(d => d.VenueTypeId)
-                .HasConstraintName("FK__venueLook__venue__628FA481");
+                .HasConstraintName("FK__venueLook__venue__534D60F1");
         });
 
         modelBuilder.Entity<VenueTypeLookup>(entity =>
         {
-            entity.HasKey(e => e.VenueTypeId).HasName("PK__venueTyp__F705DB0E8B450C4B");
+            entity.HasKey(e => e.VenueTypeId).HasName("PK__venueTyp__F705DB0E71ED9AEB");
 
             entity.ToTable("venueTypeLookup");
 

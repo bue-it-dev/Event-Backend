@@ -16,7 +16,7 @@ namespace Event.Extensions
             {
                 cfg.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "Travel System API",
+                    Title = "Event API",
                     Version = "v3",
                     Description = "Simple RESTful API built with ASP.NET Core 3.1 to show how to create RESTful services using a decoupled, maintainable architecture.",
 
@@ -57,8 +57,8 @@ namespace Event.Extensions
         {
             app.UseSwagger().UseSwaggerUI(options =>
             {
-                options.SwaggerEndpoint("/swagger/v1/swagger.json", "Travel System API");
-                options.DocumentTitle = "Travel System API";
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "Event API");
+                options.DocumentTitle = "Event API";
             });
             return app;
         }
