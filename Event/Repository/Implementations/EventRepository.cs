@@ -410,22 +410,21 @@ namespace Event.Repository.Implementations
         {
             try
             {
-                var user = await _dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.UserName == userName);
+                var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.UserName == userName);
                 if (user == null)
                 {
                     return false;
                 }
 
-                var eventApproval = await _dbContext.EventApprovals.FirstOrDefaultAsync(u => u.EventId == eventApprovalUpdatesDto.eventId && u.EmpId == userId && u.ApprovalId == eventApprovalUpdatesDto.ApprovalId);
+                var eventApproval = await _dbContext.EventApprovals.FirstOrDefaultAsync(u => u.EventId == eventApprovalUpdatesDto.eventId && u.EmpId == userId && u.UserTypeId == eventApprovalUpdatesDto.userTypeId);
 
                 if (eventApproval != null)
                 {
                     eventApproval.Status = eventApprovalUpdatesDto.status;
-                    eventApproval.UserTypeId = user.UserId;
                     eventApproval.CreatedAt = DateTime.Now;
 
                     var EventRequest = await _dbContext.EventEntities.Where(br => br.EventId == eventApproval.EventId).FirstOrDefaultAsync();
-                    if (eventApproval.ApprovalId == 15 && eventApproval.Status == 1)
+                    if (eventApproval.ApprovalId == 16 && eventApproval.Status == 1)
                     {
                         EventRequest.DecisionAt = DateTime.Now;
                     }
