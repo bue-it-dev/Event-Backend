@@ -249,37 +249,6 @@ namespace Event.Controllers
             return Ok();
           
         }
-
-        [HttpGet("get-eventRequestHOD")]
-        public async Task<IActionResult> GetEventRequestHOD()
-        {
-            var userName = User.FindFirstValue(ClaimTypes.Name);
-            var result = await _eventService.GetEventRequestHOD(userName);
-
-            if (result == null || !result.Any())
-            {
-                return NotFound(new GeneralResponse<List<GetEventDTO>>(success: false, message: "No Event requests found", data: null));
-            }
-
-            return Ok(new GeneralResponse<IEnumerable<GetEventDTO>>(success: true, message: "Event requests retrieved successfully", data: result));
-        }
-
-        [HttpGet("get-eventRequestVCB")]
-        public async Task<IActionResult> GetEventRequestVCB()
-        {
-            var userName = User.FindFirstValue(ClaimTypes.Name);
-            var result = await _eventService.GetEventRequestVCB(userName);
-
-            if (result == null || !result.Any())
-            {
-                return NotFound(new GeneralResponse<List<GetEventDTO>>( success: false, message: "No  Events found",data: null));
-            }
-
-            return Ok(new GeneralResponse<IEnumerable<GetEventDTO>>(success: true,message: "Event requests retrieved successfully", data: result));
-        }
-
-
-
         [HttpPut("update-budget-office-data/{eventId}")]
         public async Task<IActionResult> UpdateBudgetOfficeData(int eventId, updatedBudgetOfficeDTO updatedBudgetOfficeDto)
         {
@@ -300,9 +269,66 @@ namespace Event.Controllers
             {
                 return BadRequest("An error occurred while updating the Budget Office details");
             }
+        }
+            [HttpGet("get-eventRequestHOD")]
+        public async Task<IActionResult> GetEventRequestHOD()
+        {
+            var userName = User.FindFirstValue(ClaimTypes.Name);
+            var result = await _eventService.GetEventRequestHOD(userName);
 
+            if (result == null || !result.Any())
+            {
+                return NotFound(new GeneralResponse<List<GetEventDTO>>(success: false, message: "No Event requests found",  null));
+            }
+
+            return Ok(new GeneralResponse<IEnumerable<GetEventDTO>>(success: true, message: "Event requests retrieved successfully", result));
         }
 
+        [HttpGet("get-eventRequestVCB")]
+        public async Task<IActionResult> GetEventRequestVCB()
+        {
+            var userName = User.FindFirstValue(ClaimTypes.Name);
+            var result = await _eventService.GetEventRequestVCB(userName);
+
+            if (result == null || !result.Any())
+            {
+                return NotFound(new GeneralResponse<List<GetEventDTO>>( success: false, message: "No  Events found", null));
+            }
+
+            return Ok(new GeneralResponse<IEnumerable<GetEventDTO>>(success: true,message: "Event requests retrieved successfully", result));
+        }
+
+        [HttpGet("get-eventRequestOfficeOfThePresident")]
+        public async Task<IActionResult> GetEventRequestOfficeOfThePresident()
+        {
+            var userName = User.FindFirstValue(ClaimTypes.Name);
+            var result = await _eventService.GetEventRequestOfficeOfThePresident(userName);
+
+            if (result == null || !result.Any())
+            {
+                return NotFound(new GeneralResponse<List<GetEventDTO>>(success: false, message: "No  Events found", null));
+            }
+
+            return Ok(new GeneralResponse<IEnumerable<GetEventDTO>>(success: true, message: "Event requests retrieved successfully", result));
+        }
+
+        [HttpGet("get-getEventRequestSecurityCheck")]
+        public async Task<IActionResult> GetEventRequestSecurityCheck()
+        {
+            var userName = User.FindFirstValue(ClaimTypes.Name);
+            var result = await _eventService.GetEventRequestSecurityCheck(userName);
+
+            if (result == null || !result.Any())
+            {
+                return NotFound(new GeneralResponse<List<GetEventDTO>>(success: false, message: "No  Events found", null));
+            }
+
+            return Ok(new GeneralResponse<IEnumerable<GetEventDTO>>(success: true, message: "Event requests retrieved successfully", result));
+        }
+
+
     }
+
+    
 }
     

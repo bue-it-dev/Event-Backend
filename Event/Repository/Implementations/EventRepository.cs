@@ -143,11 +143,76 @@ namespace Event.Repository.Implementations
                 });
             }
 
-            
+
+            if (eventData.HasAccomdation == 1)
+            {
+                approvalList.Add(new EventApproval
+                {
+                    EventId = eventData.EventId,
+                    EmpId = 7238, //Accommodation for Approve
+                    UserTypeId = 7,
+                    IsApprove = 1,
+                    CreatedAt = DateTime.UtcNow
+                });
+            }
+            else
+            {
+                approvalList.Add(new EventApproval
+                {
+                    EventId = eventData.EventId,
+                    EmpId = 7238,  //Accommodation for Acknowledgement
+                    UserTypeId = 7,
+                    IsApprove = 0,
+                    CreatedAt = DateTime.UtcNow
+                });
+            }
+
+
+            if (eventData.HasTransportation == 1)
+            {
+                approvalList.Add(new EventApproval
+                {
+                    EventId = eventData.EventId,
+                    EmpId = 7419, //Transportation for Approve
+                    UserTypeId = 8,
+                    IsApprove = 1,
+                    CreatedAt = DateTime.UtcNow
+                });
+            }
+            else
+            {
+                approvalList.Add(new EventApproval
+                {
+                    EventId = eventData.EventId,
+                    EmpId = 7419,  //Transportation for Acknowledgement
+                    UserTypeId = 8,
+                    IsApprove = 0,
+                    CreatedAt = DateTime.UtcNow
+                });
+            }
+
+
+            approvalList.Add(new EventApproval
+            {
+                EventId = eventData.EventId,
+                EmpId = 7988,   //Budget
+                UserTypeId = 9,
+                IsApprove = 1,
+                CreatedAt = DateTime.UtcNow
+
+
+            });
+            var AcknowledgentList = new List<EventApproval>
+            {
+                new EventApproval { EventId = eventData.EventId, EmpId = 7988, UserTypeId = 10, IsApprove = 0, CreatedAt = DateTime.UtcNow }, //Marcom
+                new EventApproval { EventId = eventData.EventId, EmpId = 7990, UserTypeId = 11, IsApprove = 0, CreatedAt = DateTime.UtcNow }, //Campus
+                new EventApproval { EventId = eventData.EventId, EmpId = 7055, UserTypeId = 12, IsApprove = 0, CreatedAt = DateTime.UtcNow }, //Security
+                new EventApproval { EventId = eventData.EventId, EmpId = 151, UserTypeId = 13, IsApprove = 0, CreatedAt = DateTime.UtcNow }  //HSE
+            };
+            approvalList.AddRange(AcknowledgentList);
 
             var additionalApprovals = new List<EventApproval>
             {
-                new EventApproval { EventId = eventData.EventId, EmpId = 7988, UserTypeId = 9, IsApprove = 1, CreatedAt = DateTime.UtcNow }, //Budget
                 new EventApproval { EventId = eventData.EventId, EmpId = 1118, UserTypeId = 14, IsApprove = 1, CreatedAt = DateTime.UtcNow }, //BO
                 new EventApproval { EventId = eventData.EventId, EmpId = 7068, UserTypeId = 15, IsApprove = 1, CreatedAt = DateTime.UtcNow }, //EAF
                 new EventApproval { EventId = eventData.EventId, EmpId = 6792, UserTypeId = 16, IsApprove = 1, CreatedAt = DateTime.UtcNow }  //COO
@@ -574,6 +639,135 @@ namespace Event.Repository.Implementations
                 throw;
             }
         }
+        public async Task<IEnumerable<GetEventDTO>> GetEventRequestOfficeOfThePresident(string usaerName)
+        {
+            try
+            {
+                var eventData = from req in _dbContext.EventEntities
+                                join app in _dbContext.EventApprovals
+                                on req.EventId equals app.EventId
+                                where app.UserTypeId == 3 &&
+                                      _dbContext.EventApprovals
+                                                .Any(a => a.EventId == req.EventId &&
+                                                          a.UserTypeId == 2 &&
+                                                          a.Status == 1)
+                                orderby (req.UpdateAt ?? req.ConfirmedAt ?? req.CreatedAt) descending
+                                select new GetEventDTO
+                                {
+                                    EventId = req.EventId,
+                                    EmpId = req.EmpId,
+                                    EventTitle = req.EventTitle,
+                                    ApprovingDeptName = req.ApprovingDeptName,
+                                    EventStartDate = req.EventStartDate,
+                                    EventEndDate = req.EventEndDate,
+                                    CreatedAt = req.CreatedAt,
+                                    UpdateAt = req.UpdateAt,
+                                    OrganizerExtention = req.OrganizerExtention,
+                                    OrganizerMobile = req.OrganizerMobile,
+                                    OrganizerName = req.OrganizerName,
+                                    OrganizerEmail = req.OrganizerEmail,
+                                    approvalName = (app.Status ?? 0) == 1
+                                       ? "Approve"
+                                       : "Acknowledgement",
+                                    Status = app.Status ?? 0,
+                                    StatusName = (app.Status ?? 0) == 1
+                                     ? "Approved"
+                                     : (app.Status ?? 0) == 2
+                                       ? "Rejected"
+                                       : "Pending"
+                                                    };
 
+                return await eventData.ToListAsync();
+            
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
+
+        public async Task<IEnumerable<GetEventDTO>> GetEventRequestSecurityCheck(string usaerName)
+        {
+            try
+            {
+                var eventData = from req in _dbContext.EventEntities
+                                join app in _dbContext.EventApprovals
+                                on req.EventId equals app.EventId
+                                where app.UserTypeId == 4 &&
+                                       _dbContext.EventApprovals.Any(a => a.EventId == req.EventId &&
+                                                           a.UserTypeId == 2 &&
+                                                           a.Status == 1 && a.IsApprove == 0)
+                                orderby (req.UpdateAt ?? req.ConfirmedAt ?? req.CreatedAt) descending
+                                select new GetEventDTO
+                                {
+                                    EventId = req.EventId,
+                                    EmpId = req.EmpId,
+                                    EventTitle = req.EventTitle,
+                                    ApprovingDeptName = req.ApprovingDeptName,
+                                    EventStartDate = req.EventStartDate,
+                                    EventEndDate = req.EventEndDate,
+                                    CreatedAt = req.CreatedAt,
+                                    UpdateAt = req.UpdateAt,
+                                    OrganizerExtention = req.OrganizerExtention,
+                                    OrganizerMobile = req.OrganizerMobile,
+                                    OrganizerName = req.OrganizerName,
+                                    OrganizerEmail = req.OrganizerEmail,
+                                    Status = app.Status ?? 0,
+                                    StatusName = (app.Status ?? 0) == 1
+                                                 ? "Approved"
+                                                 : (app.Status ?? 0) == 0
+                                                   ? "Rejected"
+                                                   : "Pending"
+                                };
+
+                return await eventData.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+       
+        public async Task<IEnumerable<GetEventDTO>> GetEventRequestForAcknowledgements(string usaerName)
+        {
+            try
+            {
+                var eventData = from req in _dbContext.EventEntities
+                                join app in _dbContext.EventApprovals
+                                on req.EventId equals app.EventId
+                                where app.UserTypeId == 1 &&
+                                      _dbContext.EventApprovals
+                                                .Any(a => a.EventId == req.EventId)
+                                orderby (req.UpdateAt ?? req.ConfirmedAt ?? req.CreatedAt) descending
+                                select new GetEventDTO
+                                {
+                                    EventId = req.EventId,
+                                    EmpId = req.EmpId,
+                                    EventTitle = req.EventTitle,
+                                    ApprovingDeptName = req.ApprovingDeptName,
+                                    EventStartDate = req.EventStartDate,
+                                    EventEndDate = req.EventEndDate,
+                                    CreatedAt = req.CreatedAt,
+                                    UpdateAt = req.UpdateAt,
+                                    OrganizerExtention = req.OrganizerExtention,
+                                    OrganizerMobile = req.OrganizerMobile,
+                                    OrganizerName = req.OrganizerName,
+                                    OrganizerEmail = req.OrganizerEmail,
+                                    Status = app.Status ?? 0,
+                                    StatusName = (app.Status ?? 0) == 1
+                                                 ? "Approved"
+                                                 : (app.Status ?? 0) == 0
+                                                   ? "Rejected"
+                                                   : "Pending"
+                                };
+
+                return await eventData.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+    }
 }

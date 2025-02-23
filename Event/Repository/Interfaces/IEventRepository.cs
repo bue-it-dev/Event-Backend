@@ -19,6 +19,8 @@ namespace Event.Repository.Interfaces
         Task<bool> updateEventApprovals(eventApprovalUpdatesDto eventApprovalUpdatesDto, string userName, int userId);
         Task<IEnumerable<GetEventDTO>> GetEventRequestVCB(string usaerName);
         Task<IEnumerable<GetEventDTO>> GetEventRequestHOD(string usaerName);
+        Task<IEnumerable<GetEventDTO>> GetEventRequestOfficeOfThePresident(string usaerName);
+        Task<IEnumerable<GetEventDTO>> GetEventRequestSecurityCheck(string usaerName);
     }
 }
     

@@ -20,6 +20,8 @@ namespace Event.Services.Interfaces
         Task<IEnumerable<GetEventDTO>> GetEventRequestVCB(string usaerName);
         Task<bool> updateBudgetOffice(int eventId, updatedBudgetOfficeDTO updatedBudgetOfficeDto, int userId);
         Task<IEnumerable<GetEventDTO>> GetEventRequestHOD(string usaerName);
+        Task<IEnumerable<GetEventDTO>> GetEventRequestOfficeOfThePresident(string usaerName);
+        Task<IEnumerable<GetEventDTO>> GetEventRequestSecurityCheck(string usaerName);
 
     }
 }
