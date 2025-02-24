@@ -75,7 +75,7 @@ namespace Event.Repository.Implementations
                 new Claim (JwtRegisteredClaimNames.UniqueName, username),
                 new Claim (JwtRegisteredClaimNames.NameId, employee.id.ToString()),
                 new Claim ("name", employee.FullName),
-                new Claim ("RoleID", "1"),
+                new Claim ("RoleID", "17"),
                 new Claim ("RoleName", "Staff"),
                 new Claim ("entity", employee.departmentName),
                 new Claim ("jobTitle", employee.JobName)
