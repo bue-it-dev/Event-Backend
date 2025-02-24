@@ -312,7 +312,7 @@ namespace Event.Controllers
             return Ok(new GeneralResponse<IEnumerable<GetEventDTO>>(success: true, message: "Event requests retrieved successfully", result));
         }
 
-        [HttpGet("get-getEventRequestSecurityCheck")]
+        [HttpGet("get-EventRequestSecurityCheck")]
         public async Task<IActionResult> GetEventRequestSecurityCheck()
         {
             var userName = User.FindFirstValue(ClaimTypes.Name);
@@ -326,6 +326,19 @@ namespace Event.Controllers
             return Ok(new GeneralResponse<IEnumerable<GetEventDTO>>(success: true, message: "Event requests retrieved successfully", result));
         }
 
+        [HttpGet("get-eventRequestPublicAffairs")]
+        public async Task<IActionResult> GetEventRequestPublicAffairs()
+        {
+            var userName = User.FindFirstValue(ClaimTypes.Name);
+            var result = await _eventService.GetEventRequestPublicAffairs(userName);
+
+            if (result == null || !result.Any())
+            {
+                return NotFound(new GeneralResponse<List<GetEventDTO>>(success: false, message: "No  Events found", null));
+            }
+
+            return Ok(new GeneralResponse<IEnumerable<GetEventDTO>>(success: true, message: "Event requests retrieved successfully", result));
+        }
 
     }
 

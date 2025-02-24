@@ -424,7 +424,11 @@ namespace Event.Services.Implementations
             var result = await _eventRepository.GetEventRequestSecurityCheck(usaerName);
             return result;
         }
-
+        public async Task<IEnumerable<GetEventDTO>> GetEventRequestPublicAffairs(string usaerName)
+        {
+            var result = await _eventRepository.GetEventRequestPublicAffairs(usaerName);
+            return result;
+        }
 
         public async Task<bool> updateBudgetOffice(int eventId, updatedBudgetOfficeDTO updatedBudgetOfficeDto, int userId)
         {

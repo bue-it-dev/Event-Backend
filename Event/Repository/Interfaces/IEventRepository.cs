@@ -21,6 +21,7 @@ namespace Event.Repository.Interfaces
         Task<IEnumerable<GetEventDTO>> GetEventRequestHOD(string usaerName);
         Task<IEnumerable<GetEventDTO>> GetEventRequestOfficeOfThePresident(string usaerName);
         Task<IEnumerable<GetEventDTO>> GetEventRequestSecurityCheck(string usaerName);
+        Task<IEnumerable<GetEventDTO>> GetEventRequestPublicAffairs(string usaerName);
     }
 }
     

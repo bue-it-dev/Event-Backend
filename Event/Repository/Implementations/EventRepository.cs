@@ -727,7 +727,66 @@ namespace Event.Repository.Implementations
                 throw;
             }
         }
-       
+        public async Task<IEnumerable<GetEventDTO>> GetEventRequestPublicAffairs(string usaerName)
+        {
+            try
+            {
+                var eventData = from req in _dbContext.EventEntities
+                                join app in _dbContext.EventApprovals
+                                on req.EventId equals app.EventId
+                                where
+                                   (app.UserTypeId == 5) &&
+                                   (
+                                       _dbContext.EventApprovals.Any(a =>
+                                           a.EventId == req.EventId &&
+                                           a.UserTypeId == 4 &&
+                                           a.Status == 1
+                                       )
+                                       ||
+                                       (
+                                           !_dbContext.EventApprovals.Any(a =>
+                                               a.EventId == req.EventId &&
+                                               a.UserTypeId == 4
+                                           ) &&
+                                           _dbContext.EventApprovals.Any(a =>
+                                               a.EventId == req.EventId &&
+                                               a.UserTypeId == 3 &&
+                                               a.Status == 1
+                                           )
+                                       )
+                                   )
+                                orderby (req.UpdateAt ?? req.ConfirmedAt ?? req.CreatedAt) descending
+                                select new GetEventDTO
+                                {
+                                    EventId = req.EventId,
+                                    EmpId = req.EmpId,
+                                    EventTitle = req.EventTitle,
+                                    ApprovingDeptName = req.ApprovingDeptName,
+                                    EventStartDate = req.EventStartDate,
+                                    EventEndDate = req.EventEndDate,
+                                    CreatedAt = req.CreatedAt,
+                                    UpdateAt = req.UpdateAt,
+                                    OrganizerExtention = req.OrganizerExtention,
+                                    OrganizerMobile = req.OrganizerMobile,
+                                    OrganizerName = req.OrganizerName,
+                                    OrganizerEmail = req.OrganizerEmail,
+                                    isApprove = 0 ,
+                                    approvalName = "Acknowledgement",
+                                    Status = app.Status ?? 0,
+                                    StatusName = (app.Status ?? 0) == 1
+                                                 ? "Approved"
+                                                 : (app.Status ?? 0) == 0
+                                                   ? "Rejected"
+                                                   : "Pending"
+                                };
+
+                return await eventData.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
         public async Task<IEnumerable<GetEventDTO>> GetEventRequestForAcknowledgements(string usaerName)
         {
             try
