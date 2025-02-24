@@ -183,7 +183,7 @@ namespace Event.Repository.Implementations
             });
             var AcknowledgentList = new List<EventApproval>
             {
-                new EventApproval { EventId = eventData.EventId, EmpId = 7988, UserTypeId = 10, IsApprove = 0, CreatedAt = DateTime.UtcNow }, //Marcom
+                new EventApproval { EventId = eventData.EventId, EmpId = 7419, UserTypeId = 10, IsApprove = 0, CreatedAt = DateTime.UtcNow }, //Marcom
                 new EventApproval { EventId = eventData.EventId, EmpId = 7990, UserTypeId = 11, IsApprove = 0, CreatedAt = DateTime.UtcNow }, //Campus
                 new EventApproval { EventId = eventData.EventId, EmpId = 7055, UserTypeId = 12, IsApprove = 0, CreatedAt = DateTime.UtcNow }, //Security
                 new EventApproval { EventId = eventData.EventId, EmpId = 151, UserTypeId = 13, IsApprove = 0, CreatedAt = DateTime.UtcNow }  //HSE
@@ -819,42 +819,49 @@ namespace Event.Repository.Implementations
             }
         }
 
-        public async Task<IEnumerable<GetEventDTO>> GetEventRequestForAcknowledgements(string usaerName)
+        public async Task<IEnumerable<GetEventDTO>> GetEventRequestForAcknowledgementsAfterBudget(string usaerName)
         {
             try
             {
                 var eventData = from req in _dbContext.EventEntities
-                                join app in _dbContext.EventApprovals
-                                on req.EventId equals app.EventId
-                                where app.UserTypeId == 1 &&
-                                      _dbContext.EventApprovals
-                                                .Any(a => a.EventId == req.EventId)
-                                orderby (req.UpdateAt ?? req.ConfirmedAt ?? req.CreatedAt) descending
-                                select new GetEventDTO
-                                {
-                                    EventId = req.EventId,
-                                    EmpId = req.EmpId,
-                                    EventTitle = req.EventTitle,
-                                    ApprovingDeptName = req.ApprovingDeptName,
-                                    EventStartDate = req.EventStartDate,
-                                    EventEndDate = req.EventEndDate,
-                                    CreatedAt = req.CreatedAt,
-                                    UpdateAt = req.UpdateAt,
-                                    OrganizerExtention = req.OrganizerExtention,
-                                    OrganizerMobile = req.OrganizerMobile,
-                                    OrganizerName = req.OrganizerName,
-                                    OrganizerEmail = req.OrganizerEmail,
-                                    Status = app.Status ,
-                                    StatusName = app.Status == 1 ? "Approved" : app.Status == 0 ? "Rejected" : "Pending"
-                                };
+                                 join app in _dbContext.EventApprovals
+                                 on req.EventId equals app.EventId
+                                 where (app.UserTypeId == 10 || app.UserTypeId == 11 || app.UserTypeId == 12 || app.UserTypeId == 13) &&
+                                       _dbContext.EventApprovals.Any(a => a.EventId == req.EventId &&
+                                                                          a.UserTypeId == 9 &&
+                                                                          a.Status == 1)
+                                 group new { req, app } by req.EventId into grouped
+                                 select new GetEventDTO
+                                 {
+                                     EventId = grouped.Key,
+                                     EmpId = grouped.First().req.EmpId,
+                                     EventTitle = grouped.First().req.EventTitle,
+                                     ApprovingDeptName = grouped.First().req.ApprovingDeptName,
+                                     EventStartDate = grouped.First().req.EventStartDate,
+                                     EventEndDate = grouped.First().req.EventEndDate,
+                                     CreatedAt = grouped.First().req.CreatedAt,
+                                     UpdateAt = grouped.First().req.UpdateAt,
+                                     OrganizerExtention = grouped.First().req.OrganizerExtention,
+                                     OrganizerMobile = grouped.First().req.OrganizerMobile,
+                                     OrganizerName = grouped.First().req.OrganizerName,
+                                     OrganizerEmail = grouped.First().req.OrganizerEmail,
+                                     isApprove = 0,
+                                     approvalName = "Acknowledgement",
+                                     Status = grouped.First().app.Status,
+                                     StatusName = grouped.First().app.Status == 1 ? "Approved" :
+                                                  grouped.First().app.Status == 0 ? "Rejected" : "Pending"
+                                 };
 
                 return await eventData.ToListAsync();
+
             }
             catch (Exception ex)
             {
                 throw;
             }
         }
+
+       
 
     }
 }

@@ -354,7 +354,19 @@ namespace Event.Controllers
             return Ok(new GeneralResponse<IEnumerable<GetEventDTO>>(success: true, message: "Event requests retrieved successfully", result));
         }
 
+        [HttpGet("get-eventRequestForAcknowledgementsAfterBudget")]
+        public async Task<IActionResult> GetEventRequestForAcknowledgementsAfterBudget()
+        {
+            var userName = User.FindFirstValue(ClaimTypes.Name);
+            var result = await _eventService.GetEventRequestForAcknowledgementsAfterBudget(userName);
 
+            if (result == null || !result.Any())
+            {
+                return NotFound(new GeneralResponse<List<GetEventDTO>>(success: false, message: "No  Events found", null));
+            }
+
+            return Ok(new GeneralResponse<IEnumerable<GetEventDTO>>(success: true, message: "Event requests retrieved successfully", result));
+        }
     }
 
     

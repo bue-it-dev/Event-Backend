@@ -455,6 +455,11 @@ namespace Event.Services.Implementations
             var result = await _eventRepository.GetEventRequestIT(usaerName);
             return result;
         }
+        public async Task<IEnumerable<GetEventDTO>> GetEventRequestForAcknowledgementsAfterBudget(string usaerName)
+        {
+            var result = await _eventRepository.GetEventRequestForAcknowledgementsAfterBudget(usaerName);
+            return result;
+        }
 
     }
 }

@@ -24,6 +24,7 @@ namespace Event.Services.Interfaces
         Task<IEnumerable<GetEventDTO>> GetEventRequestSecurityCheck(string usaerName);
         Task<IEnumerable<GetEventDTO>> GetEventRequestPublicAffairs(string usaerName);
         Task<IEnumerable<GetEventDTO>> GetEventRequestIT(string usaerName);
+        Task<IEnumerable<GetEventDTO>> GetEventRequestForAcknowledgementsAfterBudget(string usaerName);
 
     }
 }
