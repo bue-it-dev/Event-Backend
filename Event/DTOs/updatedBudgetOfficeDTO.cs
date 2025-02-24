@@ -4,6 +4,6 @@
     {
         public string BudgetCode { get; set; }
         public string? BudgetCostCenter { get; set; }
-        public string BudgetNotes { get; set; }
+        public string budgetlineName { get; set; }
     }
 }

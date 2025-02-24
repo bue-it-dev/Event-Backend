@@ -6,7 +6,7 @@ namespace Event.Services.Interfaces
 {
     public interface IEventService : IGenericService<EventEntity>
     {
-        Task<int> AddEventData(EventDTO eventData);
+        Task<int> AddEventData(EventDTO eventData, int userId);
         Task SubmitEventAsync(int eventId);
         Task<EventGetDTO> GetEventDetailsById(int eventId);
         Task<(byte[] FileData, string ContentType)> GetEventFileAsync(string filePath);
@@ -17,14 +17,21 @@ namespace Event.Services.Interfaces
         Task<int> AddFiles(int EventId, List<IFormFile> passportData, IFormFile OfficeOfPresedentFile, IFormFile LedOfTheUniversityOrganizerFile, IFormFile VisitAgendaFile);
         Task<IEnumerable<GetEventDTO>> GetEventByEmpId(int empId);
         Task updateEventApprovals(eventApprovalUpdatesDto eventApprovalUpdatesDto, string userName, int userId);
-        Task<IEnumerable<GetEventDTO>> GetEventRequestVCB(string usaerName);
+        Task<IEnumerable<GetEventDTO>> GetEventRequestVCB();
         Task<bool> updateBudgetOffice(int eventId, updatedBudgetOfficeDTO updatedBudgetOfficeDto, int userId);
-        Task<IEnumerable<GetEventDTO>> GetEventRequestHOD(string usaerName);
-        Task<IEnumerable<GetEventDTO>> GetEventRequestOfficeOfThePresident(string usaerName);
-        Task<IEnumerable<GetEventDTO>> GetEventRequestSecurityCheck(string usaerName);
-        Task<IEnumerable<GetEventDTO>> GetEventRequestPublicAffairs(string usaerName);
-        Task<IEnumerable<GetEventDTO>> GetEventRequestIT(string usaerName);
-        Task<IEnumerable<GetEventDTO>> GetEventRequestForAcknowledgementsAfterBudget(string usaerName);
+        Task<IEnumerable<GetEventDTO>> GetEventRequestHOD( );
+        Task<IEnumerable<GetEventDTO>> GetEventRequestOfficeOfThePresident( );
+        Task<IEnumerable<GetEventDTO>> GetEventRequestSecurityCheck( );
+        Task<IEnumerable<GetEventDTO>> GetEventRequestPublicAffairs( );
+        Task<IEnumerable<GetEventDTO>> GetEventRequestIT( );
+        Task<IEnumerable<GetEventDTO>> GetEventRequestForAcknowledgementsAfterBudget( );
+        Task<IEnumerable<GetEventDTO>> GetEventRequestTransportation( );
+        Task<IEnumerable<GetEventDTO>> GetEventRequestAccommodation( );
+        Task<IEnumerable<GetEventDTO>> GetEventRequest(int userId);
+        Task<IEnumerable<GetEventDTO>> GetEventRequestBOM();
+        Task<IEnumerable<GetEventDTO>> GetEventRequestEAF();
+        Task<IEnumerable<GetEventDTO>> GetEventRequestCOO();
+
 
     }
 }

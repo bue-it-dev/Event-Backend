@@ -96,11 +96,12 @@ namespace Event.Services.Implementations
         }
 
 
-        public async Task<int> AddEventData(EventDTO eventData)
+        public async Task<int> AddEventData(EventDTO eventData , int userId)
         {
 
             var newEvent = _mapper.Map<EventEntity>(eventData);
             newEvent.CreatedAt = DateTime.Now;
+            newEvent.EmpId = userId;
 
             await _unitOfWork.EventEntity.AddAsync(newEvent);
 
@@ -379,6 +380,7 @@ namespace Event.Services.Implementations
                 {
                     eventRequest.BudgetCode = updatedBudgetOfficeDto.BudgetCode;
                     eventRequest.BudgetCostCenter = updatedBudgetOfficeDto.BudgetCostCenter;
+                    eventRequest.BudgetlineName = updatedBudgetOfficeDto.budgetlineName;
                     _eventRepository.UpdateAsync(eventRequest);
                 }
                 _unitOfWork.Save();
@@ -425,39 +427,71 @@ namespace Event.Services.Implementations
             var eventapproval = _eventRepository.updateEventApprovals(eventApprovalUpdatesDto, userName, userId);
         }
 
-        public async Task<IEnumerable<GetEventDTO>> GetEventRequestVCB(string usaerName)
+        public async Task<IEnumerable<GetEventDTO>> GetEventRequestVCB( )
         {
-            var result = await _eventRepository.GetEventRequestVCB(usaerName);
+            var result = await _eventRepository.GetEventRequestVCB();
             return result;
         }
-        public async Task<IEnumerable<GetEventDTO>> GetEventRequestHOD(string usaerName)
+        public async Task<IEnumerable<GetEventDTO>> GetEventRequestHOD( )
         {
-            var result = await _eventRepository.GetEventRequestHOD(usaerName);
+            var result = await _eventRepository.GetEventRequestHOD();
             return result;
         }
-        public async Task<IEnumerable<GetEventDTO>> GetEventRequestOfficeOfThePresident(string usaerName)
+        public async Task<IEnumerable<GetEventDTO>> GetEventRequestOfficeOfThePresident( )
         {
-            var result = await _eventRepository.GetEventRequestOfficeOfThePresident(usaerName);
+            var result = await _eventRepository.GetEventRequestOfficeOfThePresident();
             return result;
         }
-        public async Task<IEnumerable<GetEventDTO>> GetEventRequestSecurityCheck(string usaerName)
+        public async Task<IEnumerable<GetEventDTO>> GetEventRequestSecurityCheck()
         {
-            var result = await _eventRepository.GetEventRequestSecurityCheck(usaerName);
+            var result = await _eventRepository.GetEventRequestSecurityCheck();
             return result;
         }
-        public async Task<IEnumerable<GetEventDTO>> GetEventRequestPublicAffairs(string usaerName)
+        public async Task<IEnumerable<GetEventDTO>> GetEventRequestPublicAffairs( )
         {
-            var result = await _eventRepository.GetEventRequestPublicAffairs(usaerName);
+            var result = await _eventRepository.GetEventRequestPublicAffairs();
             return result;
         }
-        public async Task<IEnumerable<GetEventDTO>> GetEventRequestIT(string usaerName)
+        public async Task<IEnumerable<GetEventDTO>> GetEventRequestIT( )
         {
-            var result = await _eventRepository.GetEventRequestIT(usaerName);
+            var result = await _eventRepository.GetEventRequestIT();
             return result;
         }
-        public async Task<IEnumerable<GetEventDTO>> GetEventRequestForAcknowledgementsAfterBudget(string usaerName)
+        public async Task<IEnumerable<GetEventDTO>> GetEventRequestForAcknowledgementsAfterBudget( )
         {
-            var result = await _eventRepository.GetEventRequestForAcknowledgementsAfterBudget(usaerName);
+            var result = await _eventRepository.GetEventRequestForAcknowledgementsAfterBudget();
+            return result;
+        }
+        public async Task<IEnumerable<GetEventDTO>> GetEventRequestTransportation()
+        {
+            var result = await _eventRepository.GetEventRequestTransportation();
+            return result;
+        }
+
+        public async Task<IEnumerable<GetEventDTO>> GetEventRequestAccommodation()
+        {
+            var result = await _eventRepository.GetEventRequestAccommodation();
+            return result;
+        }
+        public async Task<IEnumerable<GetEventDTO>> GetEventRequest(int userId)
+        {
+            var result = await _eventRepository.GetEventRequest(userId);
+            return result;
+        }
+
+        public async Task<IEnumerable<GetEventDTO>> GetEventRequestBOM( )
+        {
+            var result = await _eventRepository.GetEventRequestBOM();
+            return result;
+        }
+        public async Task<IEnumerable<GetEventDTO>> GetEventRequestEAF( )
+        {
+            var result = await _eventRepository.GetEventRequestEAF();
+            return result;
+        }
+        public async Task<IEnumerable<GetEventDTO>> GetEventRequestCOO( )
+        {
+            var result = await _eventRepository.GetEventRequestCOO();
             return result;
         }
 

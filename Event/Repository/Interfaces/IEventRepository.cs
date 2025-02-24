@@ -17,13 +17,19 @@ namespace Event.Repository.Interfaces
         Task<IEnumerable<EventEntity>> GetEventsByEmpId(int empId);
         Task SendEventAprovalEmail(int empId, int eventId, int status);
         Task<bool> updateEventApprovals(eventApprovalUpdatesDto eventApprovalUpdatesDto, string userName, int userId);
-        Task<IEnumerable<GetEventDTO>> GetEventRequestVCB(string usaerName);
-        Task<IEnumerable<GetEventDTO>> GetEventRequestHOD(string usaerName);
-        Task<IEnumerable<GetEventDTO>> GetEventRequestOfficeOfThePresident(string usaerName);
-        Task<IEnumerable<GetEventDTO>> GetEventRequestSecurityCheck(string usaerName);
-        Task<IEnumerable<GetEventDTO>> GetEventRequestPublicAffairs(string usaerName);
-        Task<IEnumerable<GetEventDTO>> GetEventRequestIT(string usaerName);
-        Task<IEnumerable<GetEventDTO>> GetEventRequestForAcknowledgementsAfterBudget(string usaerName);
+        Task<IEnumerable<GetEventDTO>> GetEventRequestVCB();
+        Task<IEnumerable<GetEventDTO>> GetEventRequestHOD();
+        Task<IEnumerable<GetEventDTO>> GetEventRequestOfficeOfThePresident();
+        Task<IEnumerable<GetEventDTO>> GetEventRequestSecurityCheck();
+        Task<IEnumerable<GetEventDTO>> GetEventRequestPublicAffairs();
+        Task<IEnumerable<GetEventDTO>> GetEventRequestIT();
+        Task<IEnumerable<GetEventDTO>> GetEventRequestForAcknowledgementsAfterBudget();
+        Task<IEnumerable<GetEventDTO>> GetEventRequestTransportation();
+        Task<IEnumerable<GetEventDTO>> GetEventRequestAccommodation();
+        Task<IEnumerable<GetEventDTO>> GetEventRequest(int userId);
+        Task<IEnumerable<GetEventDTO>> GetEventRequestBOM();
+        Task<IEnumerable<GetEventDTO>> GetEventRequestEAF();
+        Task<IEnumerable<GetEventDTO>> GetEventRequestCOO();
     }
 }
     

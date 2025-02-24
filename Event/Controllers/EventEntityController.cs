@@ -1,5 +1,6 @@
 ﻿using Event.DTOs;
 using Event.EventModel;
+using Event.Services.Implementations;
 using Event.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -28,7 +29,7 @@ namespace Event.Controllers
 
 
         public EventEntityController(IEventService eventService, IGenericService<ItcomponentLookup> ItcomponentEvent, IGenericService<RoomLookup> roomLookup,
-            IGenericService<TransportationType> transportationType, IGenericService<BuildingLookup> BuildingLookup , IGenericService<VenueLookup> VenueLookup)
+            IGenericService<TransportationType> transportationType, IGenericService<BuildingLookup> BuildingLookup, IGenericService<VenueLookup> VenueLookup)
         {
             _eventService = eventService;
             _ItcomponentEvent = ItcomponentEvent;
@@ -37,12 +38,13 @@ namespace Event.Controllers
             _BuildingLookup = BuildingLookup;
             _VenueLookup = VenueLookup;
 
-    }
+        }
 
         [HttpPost("add-event")]
         public async Task<IActionResult> AddEvent([FromBody] EventDTO eventData)
         {
-            var result = await _eventService.AddEventData(eventData);
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var result = await _eventService.AddEventData(eventData, userId);
             return Ok(new GeneralResponse<int>(true, "Event added successfully", result));
         }
 
@@ -137,14 +139,14 @@ namespace Event.Controllers
                 return StatusCode(500, new GeneralResponse<string>(false, "An error occurred", ex.Message)); // ✅ Improved error handling
             }
         }
-      
+
         [HttpGet("get-rooms")]
         public async Task<IActionResult> GetRooms()
         {
             try
             {
-                var result = (await _roomLookup.GetListAsync(x => true)).ToList(); 
-                if (!result.Any()) 
+                var result = (await _roomLookup.GetListAsync(x => true)).ToList();
+                if (!result.Any())
                 {
                     return NotFound(new GeneralResponse<string>(false, "No Rooms found", null));
                 }
@@ -153,7 +155,7 @@ namespace Event.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new GeneralResponse<string>(false, "An error occurred", ex.Message));  
+                return StatusCode(500, new GeneralResponse<string>(false, "An error occurred", ex.Message));
             }
         }
 
@@ -162,7 +164,7 @@ namespace Event.Controllers
         {
             try
             {
-                var result = (await _transportationType.GetListAsync(x => true)).ToList(); 
+                var result = (await _transportationType.GetListAsync(x => true)).ToList();
 
                 if (!result.Any())
                 {
@@ -247,7 +249,7 @@ namespace Event.Controllers
 
             await _eventService.updateEventApprovals(eventApprovalUpdatesDto, userName, userId);
             return Ok();
-          
+
         }
         [HttpPut("update-budget-office-data/{eventId}")]
         public async Task<IActionResult> UpdateBudgetOfficeData(int eventId, updatedBudgetOfficeDTO updatedBudgetOfficeDto)
@@ -270,15 +272,14 @@ namespace Event.Controllers
                 return BadRequest("An error occurred while updating the Budget Office details");
             }
         }
-            [HttpGet("get-eventRequestHOD")]
+        [HttpGet("get-eventRequestHOD")]
         public async Task<IActionResult> GetEventRequestHOD()
         {
             var userName = User.FindFirstValue(ClaimTypes.Name);
-            var result = await _eventService.GetEventRequestHOD(userName);
-
+            var result = await _eventService.GetEventRequestHOD();
             if (result == null || !result.Any())
             {
-                return NotFound(new GeneralResponse<List<GetEventDTO>>(success: false, message: "No Event requests found",  null));
+                return NotFound(new GeneralResponse<List<GetEventDTO>>(success: false, message: "No Event requests found", null));
             }
 
             return Ok(new GeneralResponse<IEnumerable<GetEventDTO>>(success: true, message: "Event requests retrieved successfully", result));
@@ -287,22 +288,23 @@ namespace Event.Controllers
         [HttpGet("get-eventRequestVCB")]
         public async Task<IActionResult> GetEventRequestVCB()
         {
-            var userName = User.FindFirstValue(ClaimTypes.Name);
-            var result = await _eventService.GetEventRequestVCB(userName);
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            var result = await _eventService.GetEventRequestVCB();
 
             if (result == null || !result.Any())
             {
-                return NotFound(new GeneralResponse<List<GetEventDTO>>( success: false, message: "No  Events found", null));
+                return NotFound(new GeneralResponse<List<GetEventDTO>>(success: false, message: "No  Events found", null));
             }
 
-            return Ok(new GeneralResponse<IEnumerable<GetEventDTO>>(success: true,message: "Event requests retrieved successfully", result));
+            return Ok(new GeneralResponse<IEnumerable<GetEventDTO>>(success: true, message: "Event requests retrieved successfully", result));
         }
 
         [HttpGet("get-eventRequestOfficeOfThePresident")]
         public async Task<IActionResult> GetEventRequestOfficeOfThePresident()
         {
             var userName = User.FindFirstValue(ClaimTypes.Name);
-            var result = await _eventService.GetEventRequestOfficeOfThePresident(userName);
+            var result = await _eventService.GetEventRequestOfficeOfThePresident();
 
             if (result == null || !result.Any())
             {
@@ -316,7 +318,7 @@ namespace Event.Controllers
         public async Task<IActionResult> GetEventRequestSecurityCheck()
         {
             var userName = User.FindFirstValue(ClaimTypes.Name);
-            var result = await _eventService.GetEventRequestSecurityCheck(userName);
+            var result = await _eventService.GetEventRequestSecurityCheck();
 
             if (result == null || !result.Any())
             {
@@ -330,7 +332,7 @@ namespace Event.Controllers
         public async Task<IActionResult> GetEventRequestPublicAffairs()
         {
             var userName = User.FindFirstValue(ClaimTypes.Name);
-            var result = await _eventService.GetEventRequestPublicAffairs(userName);
+            var result = await _eventService.GetEventRequestPublicAffairs();
 
             if (result == null || !result.Any())
             {
@@ -344,7 +346,7 @@ namespace Event.Controllers
         public async Task<IActionResult> GetEventRequestIT()
         {
             var userName = User.FindFirstValue(ClaimTypes.Name);
-            var result = await _eventService.GetEventRequestIT(userName);
+            var result = await _eventService.GetEventRequestIT();
 
             if (result == null || !result.Any())
             {
@@ -358,7 +360,7 @@ namespace Event.Controllers
         public async Task<IActionResult> GetEventRequestForAcknowledgementsAfterBudget()
         {
             var userName = User.FindFirstValue(ClaimTypes.Name);
-            var result = await _eventService.GetEventRequestForAcknowledgementsAfterBudget(userName);
+            var result = await _eventService.GetEventRequestForAcknowledgementsAfterBudget();
 
             if (result == null || !result.Any())
             {
@@ -367,8 +369,94 @@ namespace Event.Controllers
 
             return Ok(new GeneralResponse<IEnumerable<GetEventDTO>>(success: true, message: "Event requests retrieved successfully", result));
         }
-    }
 
+        [HttpGet("get-eventRequestTransportation")]
+        public async Task<IActionResult> GetEventRequestTransportation()
+        {
+            var userName = User.FindFirstValue(ClaimTypes.Name);
+            var result = await _eventService.GetEventRequestTransportation();
+
+            if (result == null || !result.Any())
+            {
+                return NotFound(new GeneralResponse<List<GetEventDTO>>(success: false, message: "No  Events found", null));
+            }
+
+            return Ok(new GeneralResponse<IEnumerable<GetEventDTO>>(success: true, message: "Event requests retrieved successfully", result));
+        }
+
+        [HttpGet("get-eventRequestAccommodation")]
+        public async Task<IActionResult> GetEventRequestAccommodation()
+        {
+
+            var result = await _eventService.GetEventRequestAccommodation();
+
+            if (result == null || !result.Any())
+            {
+                return NotFound(new GeneralResponse<List<GetEventDTO>>(success: false, message: "No  Events found", null));
+            }
+
+            return Ok(new GeneralResponse<IEnumerable<GetEventDTO>>(success: true, message: "Event requests retrieved successfully", result));
+        }
+
+        [HttpGet("get-eventRequestBOM")]
+        public async Task<IActionResult> GetEventRequestBOM()
+        {
+
+            var result = await _eventService.GetEventRequestBOM();
+
+            if (result == null || !result.Any())
+            {
+                return NotFound(new GeneralResponse<List<GetEventDTO>>(success: false, message: "No  Events found", null));
+            }
+
+            return Ok(new GeneralResponse<IEnumerable<GetEventDTO>>(success: true, message: "Event requests retrieved successfully", result));
+        }
+
+
+        [HttpGet("get-eventRequestEAF")]
+        public async Task<IActionResult> GetEventRequestEAF()
+        {
+
+            var result = await _eventService.GetEventRequestEAF();
+
+            if (result == null || !result.Any())
+            {
+                return NotFound(new GeneralResponse<List<GetEventDTO>>(success: false, message: "No  Events found", null));
+            }
+
+            return Ok(new GeneralResponse<IEnumerable<GetEventDTO>>(success: true, message: "Event requests retrieved successfully", result));
+        }
+
+        [HttpGet("get-eventRequestCOO")]
+        public async Task<IActionResult> GetEventRequestCOO()
+        {
+
+            var result = await _eventService.GetEventRequestCOO();
+
+            if (result == null || !result.Any())
+            {
+                return NotFound(new GeneralResponse<List<GetEventDTO>>(success: false, message: "No  Events found", null));
+            }
+
+            return Ok(new GeneralResponse<IEnumerable<GetEventDTO>>(success: true, message: "Event requests retrieved successfully", result));
+        }
+
+        //[HttpGet("get-eventRequest")]
+        //public async Task<IActionResult> GetEventRequest()
+        //{
+        //    var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+        //    var result = await _eventService.GetEventRequest(userId);
+
+        //    if (result == null || !result.Any())
+        //    {
+        //        return NotFound(new GeneralResponse<List<GetEventDTO>>(success: false, message: "No  Events found", null));
+        //    }
+
+        //    return Ok(new GeneralResponse<IEnumerable<GetEventDTO>>(success: true, message: "Event requests retrieved successfully", result));
+
+        //}
+    }
     
 }
     
