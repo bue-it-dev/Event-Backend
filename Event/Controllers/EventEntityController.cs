@@ -340,6 +340,21 @@ namespace Event.Controllers
             return Ok(new GeneralResponse<IEnumerable<GetEventDTO>>(success: true, message: "Event requests retrieved successfully", result));
         }
 
+        [HttpGet("get-eventRequestIT")]
+        public async Task<IActionResult> GetEventRequestIT()
+        {
+            var userName = User.FindFirstValue(ClaimTypes.Name);
+            var result = await _eventService.GetEventRequestIT(userName);
+
+            if (result == null || !result.Any())
+            {
+                return NotFound(new GeneralResponse<List<GetEventDTO>>(success: false, message: "No  Events found", null));
+            }
+
+            return Ok(new GeneralResponse<IEnumerable<GetEventDTO>>(success: true, message: "Event requests retrieved successfully", result));
+        }
+
+
     }
 
     

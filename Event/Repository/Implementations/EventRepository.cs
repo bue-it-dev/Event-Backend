@@ -155,17 +155,6 @@ namespace Event.Repository.Implementations
                     CreatedAt = DateTime.UtcNow
                 });
             }
-            else
-            {
-                approvalList.Add(new EventApproval
-                {
-                    EventId = eventData.EventId,
-                    EmpId = 7238,  //Accommodation for Acknowledgement
-                    UserTypeId = 7,
-                    IsApprove = 0,
-                    CreatedAt = DateTime.UtcNow
-                });
-            }
 
 
             if (eventData.HasTransportation == 1)
@@ -179,17 +168,7 @@ namespace Event.Repository.Implementations
                     CreatedAt = DateTime.UtcNow
                 });
             }
-            else
-            {
-                approvalList.Add(new EventApproval
-                {
-                    EventId = eventData.EventId,
-                    EmpId = 7419,  //Transportation for Acknowledgement
-                    UserTypeId = 8,
-                    IsApprove = 0,
-                    CreatedAt = DateTime.UtcNow
-                });
-            }
+           
 
 
             approvalList.Add(new EventApproval
@@ -583,12 +562,9 @@ namespace Event.Repository.Implementations
                                     OrganizerMobile = req.OrganizerMobile,
                                     OrganizerName = req.OrganizerName,
                                     OrganizerEmail = req.OrganizerEmail,
-                                    Status = app.Status ?? 0,
-                                    StatusName = (app.Status ?? 0) == 1
-                                                 ? "Approved"
-                                                 : (app.Status ?? 0) == 0
-                                                   ? "Rejected"
-                                                   : "Pending"
+                                    isApprove = app.IsApprove,
+                                    Status = app.Status,
+                                    StatusName = app.Status == 1 ? "Approved" : app.Status == 0 ? "Rejected" : "Pending"
                                 };
 
                 return await eventData.ToListAsync();
@@ -624,12 +600,9 @@ namespace Event.Repository.Implementations
                                     OrganizerMobile = req.OrganizerMobile,
                                     OrganizerName = req.OrganizerName,
                                     OrganizerEmail = req.OrganizerEmail,
-                                    Status = app.Status ?? 0,
-                                    StatusName = (app.Status ?? 0) == 1
-                                                 ? "Approved"
-                                                 : (app.Status ?? 0) == 0
-                                                   ? "Rejected"
-                                                   : "Pending"
+                                    isApprove = app.IsApprove,
+                                    Status = app.Status,
+                                    StatusName = app.Status == 1 ? "Approved" : app.Status == 0 ? "Rejected" : "Pending"
                                 };
 
                 return await eventData.ToListAsync();
@@ -666,16 +639,11 @@ namespace Event.Repository.Implementations
                                     OrganizerMobile = req.OrganizerMobile,
                                     OrganizerName = req.OrganizerName,
                                     OrganizerEmail = req.OrganizerEmail,
-                                    approvalName = (app.Status ?? 0) == 1
-                                       ? "Approve"
-                                       : "Acknowledgement",
-                                    Status = app.Status ?? 0,
-                                    StatusName = (app.Status ?? 0) == 1
-                                     ? "Approved"
-                                     : (app.Status ?? 0) == 2
-                                       ? "Rejected"
-                                       : "Pending"
-                                                    };
+                                    isApprove = app.IsApprove,
+                                    approvalName = app.IsApprove == 1 ? "Approve" : "Acknowledgement" ,
+                                    Status = app.Status,
+                                    StatusName = app.Status == 1 ? "Approved" : app.Status == 0 ? "Rejected" : "Pending"
+                                };
 
                 return await eventData.ToListAsync();
             
@@ -695,8 +663,8 @@ namespace Event.Repository.Implementations
                                 on req.EventId equals app.EventId
                                 where app.UserTypeId == 4 &&
                                        _dbContext.EventApprovals.Any(a => a.EventId == req.EventId &&
-                                                           a.UserTypeId == 2 &&
-                                                           a.Status == 1 && a.IsApprove == 0)
+                                                           a.UserTypeId == 3 &&
+                                                           a.Status == 1 && a.IsApprove == 1)
                                 orderby (req.UpdateAt ?? req.ConfirmedAt ?? req.CreatedAt) descending
                                 select new GetEventDTO
                                 {
@@ -712,12 +680,10 @@ namespace Event.Repository.Implementations
                                     OrganizerMobile = req.OrganizerMobile,
                                     OrganizerName = req.OrganizerName,
                                     OrganizerEmail = req.OrganizerEmail,
-                                    Status = app.Status ?? 0,
-                                    StatusName = (app.Status ?? 0) == 1
-                                                 ? "Approved"
-                                                 : (app.Status ?? 0) == 0
-                                                   ? "Rejected"
-                                                   : "Pending"
+                                    isApprove = 0,
+                                    approvalName = "Acknowledgement",
+                                    Status = app.Status,
+                                    StatusName = app.Status == 1 ? "Approved" : app.Status == 0 ? "Rejected" : "Pending"
                                 };
 
                 return await eventData.ToListAsync();
@@ -772,12 +738,8 @@ namespace Event.Repository.Implementations
                                     OrganizerEmail = req.OrganizerEmail,
                                     isApprove = 0 ,
                                     approvalName = "Acknowledgement",
-                                    Status = app.Status ?? 0,
-                                    StatusName = (app.Status ?? 0) == 1
-                                                 ? "Approved"
-                                                 : (app.Status ?? 0) == 0
-                                                   ? "Rejected"
-                                                   : "Pending"
+                                    Status = app.Status,
+                                    StatusName = app.Status == 1 ? "Approved" : app.Status == 0 ? "Rejected" : "Pending"
                                 };
 
                 return await eventData.ToListAsync();
@@ -787,6 +749,76 @@ namespace Event.Repository.Implementations
                 throw;
             }
         }
+
+        public async Task<IEnumerable<GetEventDTO>> GetEventRequestIT(string usaerName)
+        {
+            try
+            {
+                var eventData = from req in _dbContext.EventEntities
+                                join app in _dbContext.EventApprovals
+                                on req.EventId equals app.EventId
+                                where
+                                   (app.UserTypeId == 6) &&
+                                   (
+                                       _dbContext.EventApprovals.Any(a =>
+                                           a.EventId == req.EventId &&
+                                           a.UserTypeId == 5 &&
+                                           a.Status == 1
+                                       )
+                                       ||
+                                       (
+                                           !_dbContext.EventApprovals.Any(a =>
+                                               a.EventId == req.EventId &&
+                                               a.UserTypeId == 5
+                                           ) &&
+                                           _dbContext.EventApprovals.Any(a =>
+                                               a.EventId == req.EventId &&
+                                               a.UserTypeId == 4 &&
+                                               a.Status == 1
+                                           )
+                                       )
+                                        ||
+                                       (
+                                           !_dbContext.EventApprovals.Any(a =>
+                                               a.EventId == req.EventId &&
+                                               a.UserTypeId == 5 && a.UserTypeId == 4
+                                           ) &&
+                                           _dbContext.EventApprovals.Any(a =>
+                                               a.EventId == req.EventId &&
+                                               a.UserTypeId == 3 &&
+                                               a.Status == 1
+                                           )
+                                       )
+                                   )
+                                orderby (req.UpdateAt ?? req.ConfirmedAt ?? req.CreatedAt) descending
+                                select new GetEventDTO
+                                {
+                                    EventId = req.EventId,
+                                    EmpId = req.EmpId,
+                                    EventTitle = req.EventTitle,
+                                    ApprovingDeptName = req.ApprovingDeptName,
+                                    EventStartDate = req.EventStartDate,
+                                    EventEndDate = req.EventEndDate,
+                                    CreatedAt = req.CreatedAt,
+                                    UpdateAt = req.UpdateAt,
+                                    OrganizerExtention = req.OrganizerExtention,
+                                    OrganizerMobile = req.OrganizerMobile,
+                                    OrganizerName = req.OrganizerName,
+                                    OrganizerEmail = req.OrganizerEmail,
+                                    isApprove = app.IsApprove,
+                                    approvalName = app.IsApprove == 1 ? "Approve" : "Acknowledgement",
+                                    Status = app.Status,
+                                    StatusName = app.Status == 1 ? "Approved" : app.Status == 0 ? "Rejected" : "Pending"
+                                };
+
+                return await eventData.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
         public async Task<IEnumerable<GetEventDTO>> GetEventRequestForAcknowledgements(string usaerName)
         {
             try
@@ -812,12 +844,8 @@ namespace Event.Repository.Implementations
                                     OrganizerMobile = req.OrganizerMobile,
                                     OrganizerName = req.OrganizerName,
                                     OrganizerEmail = req.OrganizerEmail,
-                                    Status = app.Status ?? 0,
-                                    StatusName = (app.Status ?? 0) == 1
-                                                 ? "Approved"
-                                                 : (app.Status ?? 0) == 0
-                                                   ? "Rejected"
-                                                   : "Pending"
+                                    Status = app.Status ,
+                                    StatusName = app.Status == 1 ? "Approved" : app.Status == 0 ? "Rejected" : "Pending"
                                 };
 
                 return await eventData.ToListAsync();

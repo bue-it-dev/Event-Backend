@@ -48,8 +48,8 @@
         public int? EmpId { get; set; }
 
         public DateTime? ConfirmedAt { get; set; }
-        public int Status { get; set; }
-        public int isApprove { get; set; }
+        public int? Status { get; set; }
+        public int? isApprove { get; set; }
 
         public string StatusName { get; set; }
         public string approvalName { get; set; }

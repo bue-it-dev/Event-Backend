@@ -369,6 +369,27 @@ namespace Event.Services.Implementations
             var ItComponents = await _eventRepository.GetItComponents();
             return ItComponents;
         }
+        public async Task<bool> updateBudgetOffice(int eventId, updatedBudgetOfficeDTO updatedBudgetOfficeDto, int userId)
+        {
+            try
+            {
+
+                var eventRequest = await _eventRepository.GetAsync(e => e.EventId == eventId);
+                if (eventRequest != null)
+                {
+                    eventRequest.BudgetCode = updatedBudgetOfficeDto.BudgetCode;
+                    eventRequest.BudgetCostCenter = updatedBudgetOfficeDto.BudgetCostCenter;
+                    _eventRepository.UpdateAsync(eventRequest);
+                }
+                _unitOfWork.Save();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+        }
 
         public async Task<IEnumerable<GetEventDTO>> GetEventByEmpId(int empId)
         {
@@ -429,28 +450,12 @@ namespace Event.Services.Implementations
             var result = await _eventRepository.GetEventRequestPublicAffairs(usaerName);
             return result;
         }
-
-        public async Task<bool> updateBudgetOffice(int eventId, updatedBudgetOfficeDTO updatedBudgetOfficeDto, int userId)
+        public async Task<IEnumerable<GetEventDTO>> GetEventRequestIT(string usaerName)
         {
-            try
-            {
-
-                var eventRequest = await _eventRepository.GetAsync(e => e.EventId == eventId);
-                if (eventRequest != null)
-                {
-                    eventRequest.BudgetCode = updatedBudgetOfficeDto.BudgetCode;
-                    eventRequest.BudgetCostCenter = updatedBudgetOfficeDto.BudgetCostCenter;
-                     _eventRepository.UpdateAsync(eventRequest);
-                }
-                _unitOfWork.Save();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-
+            var result = await _eventRepository.GetEventRequestIT(usaerName);
+            return result;
         }
+
     }
 }
 
