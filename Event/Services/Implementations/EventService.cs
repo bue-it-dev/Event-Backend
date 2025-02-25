@@ -405,6 +405,11 @@ namespace Event.Services.Implementations
                 EventEndDate = e.EventEndDate,
                 CreatedAt = e.CreatedAt,
                 UpdateAt = e.UpdateAt,
+                OrganizerEmail = e.OrganizerEmail,
+                OrganizerExtention = e.OrganizerExtention,
+                OrganizerMobile = e.OrganizerMobile,
+                OrganizerName = e.OrganizerName,
+                ApprovingDeptName = e.ApprovingDeptName,
                 EmpId = e.EmpId,
                 StatusName = e.EventApprovals
                     .OrderByDescending(approval => approval.ApprovalId)

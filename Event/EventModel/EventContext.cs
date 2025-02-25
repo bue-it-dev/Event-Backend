@@ -204,6 +204,7 @@ public partial class EventContext : DbContext
             entity.Property(e => e.IsChairBoardPrisidentVcb).HasColumnName("isChairBoardPrisidentVCB");
             entity.Property(e => e.IsOthers).HasColumnName("isOthers");
             entity.Property(e => e.IsStaffStudents).HasColumnName("isStaffStudents");
+            entity.Property(e => e.IsVip).HasColumnName("isVIP");
             entity.Property(e => e.LedOfTheUniversityOrganizerFile).HasColumnName("ledOfTheUniversityOrganizerFile");
             entity.Property(e => e.OrganizerEmail).HasColumnName("organizerEmail");
             entity.Property(e => e.OrganizerExtention).HasColumnName("organizerExtention");

@@ -63,6 +63,8 @@ public partial class EventEntity
 
     public string? OrganizerEmail { get; set; }
 
+    public int? IsVip { get; set; }
+
     public virtual ICollection<Accommodation> Accommodations { get; set; } = new List<Accommodation>();
 
     public virtual ICollection<BuildingVenue> BuildingVenues { get; set; } = new List<BuildingVenue>();
