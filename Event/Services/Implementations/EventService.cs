@@ -44,11 +44,12 @@ namespace Event.Services.Implementations
                 }
             }
 
-            if (eventData.IsOthers != 0 && eventData.IsOthers != null)
+            if (eventData.IsOthers ==1 )
             {
                 eventData.VisitAgendaFile = await _eventRepository.SaveFileAsync(VisitAgendaFile, uploadFolder);
-                if (eventData.IsOthers == 1) //Mean international guests
+                if (eventData.IsVip == 1) //Mean international guests
                 {
+
                     if (passportData != null && passportData.Any())
                     {
                         var uploadFolderPassports = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
@@ -297,7 +298,7 @@ namespace Event.Services.Implementations
             }
            
 
-            if (eventBeforeUpdate.IsOthers != 0 && eventBeforeUpdate.IsOthers != null)
+            if (eventBeforeUpdate.IsOthers == 1 ) 
             {
                 eventBeforeUpdate.VisitAgendaFile = await _eventRepository.ReplaceFileAsync(
                     eventBeforeUpdate.VisitAgendaFile,
@@ -317,7 +318,7 @@ namespace Event.Services.Implementations
             }
 
             // Add new passport files only if IsOthers == 1 (International guests)
-            if (eventBeforeUpdate.IsOthers == 1 && passportData != null && passportData.Any())
+            if (eventBeforeUpdate.IsVip == 1 && passportData != null && passportData.Any())
             {
                 var newPassports = new List<Passport>();
 
