@@ -405,7 +405,7 @@ namespace Event.Services.Implementations
         {
             var events = await _eventRepository.GetEventsByEmpId(empId);
 
-            var eventDTOs = events.Select(e => new GetEventDTO
+            var eventDTOs = events.OrderByDescending(e => e.UpdateAt ?? e.ConfirmedAt ?? e.CreatedAt).Select(e => new GetEventDTO
             {
                 EventId = e.EventId,
                 EventTitle = e.EventTitle,
@@ -418,6 +418,7 @@ namespace Event.Services.Implementations
                 OrganizerMobile = e.OrganizerMobile,
                 OrganizerName = e.OrganizerName,
                 ApprovingDeptName = e.ApprovingDeptName,
+                ConfirmedAt = e.ConfirmedAt,
                 EmpId = e.EmpId,
                 StatusName = e.EventApprovals
                     .OrderByDescending(approval => approval.ApprovalId)

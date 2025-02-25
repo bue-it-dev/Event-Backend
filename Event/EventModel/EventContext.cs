@@ -63,11 +63,13 @@ public partial class EventContext : DbContext
     {
         modelBuilder.Entity<Accommodation>(entity =>
         {
-            entity.HasKey(e => e.AccommodationId).HasName("PK__Accommod__20C0A5FD7789999D");
+            entity
+                .HasNoKey()
+                .ToTable("Accommodation");
 
-            entity.ToTable("Accommodation");
-
-            entity.Property(e => e.AccommodationId).HasColumnName("accommodationId");
+            entity.Property(e => e.AccommodationId)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("accommodationId");
             entity.Property(e => e.EndDate)
                 .HasColumnType("datetime")
                 .HasColumnName("endDate");
@@ -78,9 +80,10 @@ public partial class EventContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("startDate");
 
-            entity.HasOne(d => d.Event).WithMany(p => p.Accommodations)
+            entity.HasOne(d => d.Event).WithMany()
                 .HasForeignKey(d => d.EventId)
-                .HasConstraintName("FK__Accommoda__event__5812160E");
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("PK__Accommod");
         });
 
         modelBuilder.Entity<ApprovalSchema>(entity =>
@@ -121,7 +124,8 @@ public partial class EventContext : DbContext
 
             entity.HasOne(d => d.Event).WithMany(p => p.BuildingVenues)
                 .HasForeignKey(d => d.EventId)
-                .HasConstraintName("FK__BuildingV__event__59FA5E80");
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK__BuildingV__event");
 
             entity.HasOne(d => d.Venue).WithMany(p => p.BuildingVenues)
                 .HasForeignKey(d => d.VenueId)
@@ -154,6 +158,7 @@ public partial class EventContext : DbContext
 
             entity.HasOne(d => d.Event).WithMany(p => p.EventApprovals)
                 .HasForeignKey(d => d.EventId)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_EventApprovals_EventEntity");
         });
 
@@ -206,16 +211,22 @@ public partial class EventContext : DbContext
             entity.Property(e => e.IsStaffStudents).HasColumnName("isStaffStudents");
             entity.Property(e => e.IsVip).HasColumnName("isVIP");
             entity.Property(e => e.LedOfTheUniversityOrganizerFile).HasColumnName("ledOfTheUniversityOrganizerFile");
+            entity.Property(e => e.NatureOfEventId).HasColumnName("natureOfEventId");
             entity.Property(e => e.OrganizerEmail).HasColumnName("organizerEmail");
             entity.Property(e => e.OrganizerExtention).HasColumnName("organizerExtention");
             entity.Property(e => e.OrganizerMobile).HasColumnName("organizerMobile");
             entity.Property(e => e.OrganizerName)
                 .HasMaxLength(50)
                 .HasColumnName("organizerName");
+            entity.Property(e => e.OrganizerPosition).HasColumnName("organizerPosition");
             entity.Property(e => e.UpdateAt)
                 .HasColumnType("datetime")
                 .HasColumnName("update_at");
             entity.Property(e => e.VisitAgendaFile).HasColumnName("visitAgendaFile");
+
+            entity.HasOne(d => d.NatureOfEvent).WithMany(p => p.EventEntities)
+                .HasForeignKey(d => d.NatureOfEventId)
+                .HasConstraintName("FK_EventEntity_NatureOfEventLookup");
         });
 
         modelBuilder.Entity<ItcomponentEvent>(entity =>
@@ -274,7 +285,7 @@ public partial class EventContext : DbContext
             entity.HasOne(d => d.Event).WithMany(p => p.Passports)
                 .HasForeignKey(d => d.EventId)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_EventEntity_RelatedEntity");
+                .HasConstraintName("FK_Passport_EventEntity");
         });
 
         modelBuilder.Entity<RoomLookup>(entity =>
@@ -321,7 +332,8 @@ public partial class EventContext : DbContext
 
             entity.HasOne(d => d.Event).WithMany(p => p.Transportations)
                 .HasForeignKey(d => d.EventId)
-                .HasConstraintName("FK__Transport__event__5FB337D6");
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK__Transport__event");
 
             entity.HasOne(d => d.TransportationType).WithMany(p => p.Transportations)
                 .HasForeignKey(d => d.TransportationTypeId)

@@ -76,7 +76,7 @@ namespace Event.Repository.Implementations
                 CreatedAt = DateTime.Now
             });
 
-            if (eventData.IsOthers == 1)
+            if (eventData.IsVip == 1)
             {
                 approvalList.Add(new EventApproval
                 {
@@ -116,7 +116,7 @@ namespace Event.Repository.Implementations
                     EmpId = 7161, // public Affairs for Acknowledgement
                     UserTypeId = 5,
                     IsApprove = 0,
-                    CreatedAt = DateTime.UtcNow
+                    CreatedAt = DateTime.Now
                 });
             }
 
@@ -128,7 +128,7 @@ namespace Event.Repository.Implementations
                     EmpId = 7011, //IT for Approve
                     UserTypeId = 6,
                     IsApprove = 1,
-                    CreatedAt = DateTime.UtcNow
+                    CreatedAt = DateTime.Now
                 });
             }
             else
@@ -139,7 +139,7 @@ namespace Event.Repository.Implementations
                     EmpId = 7011,  //IT for Acknowledgement
                     UserTypeId = 6,
                     IsApprove = 0,
-                    CreatedAt = DateTime.UtcNow
+                    CreatedAt = DateTime.Now
                 });
             }
 
@@ -152,7 +152,7 @@ namespace Event.Repository.Implementations
                     EmpId = 7238, //Accommodation for Approve
                     UserTypeId = 7,
                     IsApprove = 1,
-                    CreatedAt = DateTime.UtcNow
+                    CreatedAt = DateTime.Now
                 });
             }
 
@@ -165,7 +165,7 @@ namespace Event.Repository.Implementations
                     EmpId = 7419, //Transportation for Approve
                     UserTypeId = 8,
                     IsApprove = 1,
-                    CreatedAt = DateTime.UtcNow
+                    CreatedAt = DateTime.Now
                 });
             }
            
@@ -177,7 +177,7 @@ namespace Event.Repository.Implementations
                 EmpId = 7988,   //Budget
                 UserTypeId = 9,
                 IsApprove = 1,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now
 
 
             });
@@ -210,7 +210,7 @@ namespace Event.Repository.Implementations
 
             if (existingRequest != null)
             {
-                existingRequest.ConfirmedAt = DateTime.UtcNow;
+                existingRequest.ConfirmedAt = DateTime.Now;
                 _dbContext.EventEntities.Update(existingRequest);
                 await _unitOfWork.Save();
             }
