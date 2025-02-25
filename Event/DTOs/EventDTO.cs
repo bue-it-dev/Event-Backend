@@ -35,6 +35,9 @@ namespace Event.DTOs
 
         public int? IsChairBoardPrisidentVcb { get; set; }
         public string? OrganizerEmail { get; set; }
+        public int? NatureOfEventId { get; set; }
+
+        public string? OrganizerPosition { get; set; }
 
         public List<ItcomponentEventDTO> ItcomponentEvents { get; set; } = new();
         public List<TransportationDTO> Transportations { get; set; } = new();
