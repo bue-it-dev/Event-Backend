@@ -24,12 +24,14 @@ namespace Event.Controllers
         private readonly IGenericService<TransportationType> _transportationType;
         private readonly IGenericService<BuildingLookup> _BuildingLookup;
         private readonly IGenericService<VenueLookup> _VenueLookup;
+        private readonly IGenericService<NatureOfEventLookup> _NatureOfEventLookup;
+
 
 
 
 
         public EventEntityController(IEventService eventService, IGenericService<ItcomponentLookup> ItcomponentEvent, IGenericService<RoomLookup> roomLookup,
-            IGenericService<TransportationType> transportationType, IGenericService<BuildingLookup> BuildingLookup, IGenericService<VenueLookup> VenueLookup)
+            IGenericService<TransportationType> transportationType, IGenericService<BuildingLookup> BuildingLookup, IGenericService<VenueLookup> VenueLookup, IGenericService<NatureOfEventLookup> NatureOfEventLookup)
         {
             _eventService = eventService;
             _ItcomponentEvent = ItcomponentEvent;
@@ -37,6 +39,7 @@ namespace Event.Controllers
             _transportationType = transportationType;
             _BuildingLookup = BuildingLookup;
             _VenueLookup = VenueLookup;
+            _NatureOfEventLookup = NatureOfEventLookup;
 
         }
 
@@ -217,7 +220,25 @@ namespace Event.Controllers
                 return StatusCode(500, new GeneralResponse<string>(false, "An error occurred", ex.Message));
             }
         }
+        [HttpGet("get-naturesOfEvent")]
+        public async Task<IActionResult> GetNaturesOfEvent()
+        {
+            try
+            {
+                var result = (await _NatureOfEventLookup.GetListAsync(n => true)).ToList();
 
+                if (!result.Any())
+                {
+                    return NotFound(new GeneralResponse<string>(false, "Not found", null));
+                }
+
+                return Ok(new GeneralResponse<List<NatureOfEventLookup>>(true, "NaturesOfEvent retrieved successfully", result));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new GeneralResponse<string>(false, "An error occurred", ex.Message));
+            }
+        }
         [HttpGet("get-events-by-empId/{empId}")]
         public async Task<IActionResult> GetEventsByEmpId(int empId)
         {
