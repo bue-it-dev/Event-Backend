@@ -259,6 +259,11 @@ namespace Event.Repository.Implementations
             }
         }
 
+        public async Task<List<string>> GetEventDetailsById(int eventId)
+        {
+            var passports = await _dbContext.Passports.Where(p => p.EventId == eventId).Select(p => p.PassportFile).ToListAsync();
+            return passports;
+        }
 
         public async Task<string?> SaveFileAsync(IFormFile? file, string folderPath)
         {

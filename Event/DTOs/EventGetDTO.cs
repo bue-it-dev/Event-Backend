@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Event.EventModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Event.DTOs
 {
@@ -43,9 +44,11 @@ namespace Event.DTOs
         public int? IsStaffStudents { get; set; }
 
         public int? IsChairBoardPrisidentVcb { get; set; }
-        public IFormFile? LedOfTheUniversityOrganizerFilePath { get; set; }
-        public IFormFile? OfficeOfPresedentFilePath { get; set; }
-        public IFormFile? VisitAgendaFilePath { get; set; }
+        public string? LedOfTheUniversityOrganizerFilePath { get; set; }
+        public string? OfficeOfPresedentFilePath { get; set; }
+        public string? VisitAgendaFilePath { get; set; }
         public DateTime? ConfirmedAt { get; set; }
+
+        public virtual List<string> Passports { get; set; }
     }
 }

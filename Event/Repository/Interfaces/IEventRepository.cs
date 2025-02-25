@@ -30,6 +30,7 @@ namespace Event.Repository.Interfaces
         Task<IEnumerable<GetEventDTO>> GetEventRequestBOM();
         Task<IEnumerable<GetEventDTO>> GetEventRequestEAF();
         Task<IEnumerable<GetEventDTO>> GetEventRequestCOO();
+        Task<List<string>> GetEventDetailsById(int eventId);
     }
 }
     

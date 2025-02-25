@@ -176,9 +176,15 @@ namespace Event.Services.Implementations
         public async Task<EventGetDTO> GetEventDetailsById(int eventId)
         {
             var eventData = await _eventRepository.GetAsync(e => e.EventId == eventId);
+            List<string> passports = await _eventRepository.GetEventDetailsById(eventId); 
+
             try
             {
                 var eventGetDTO = _mapper.Map<EventGetDTO>(eventData);
+                eventGetDTO.LedOfTheUniversityOrganizerFilePath = eventData.LedOfTheUniversityOrganizerFile;
+                eventGetDTO.VisitAgendaFilePath = eventData.VisitAgendaFile;
+                eventGetDTO.OfficeOfPresedentFilePath = eventData.OfficeOfPresedentFile;
+                eventGetDTO.Passports = passports;
                 return eventGetDTO;
             }
             catch (Exception ex)
@@ -186,6 +192,7 @@ namespace Event.Services.Implementations
                 throw ex;
             }
         }
+
 
         public async Task<(byte[] FileData, string ContentType)> GetEventFileAsync(string filePath)
         {
